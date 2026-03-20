@@ -21,13 +21,10 @@
             --glass: rgba(255, 255, 255, 0.03);
             --success: #22c55e;
             --warning: #f59e0b;
+            --info: #3b82f6;
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -39,7 +36,6 @@
             position: relative;
         }
 
-        /* Animated Background */
         body::before {
             content: '';
             position: fixed;
@@ -49,8 +45,7 @@
             height: 100%;
             background: 
                 radial-gradient(circle at 20% 50%, rgba(220, 38, 38, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 80% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
         }
@@ -70,12 +65,10 @@
             mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
-        /* Navigation */
         .top-nav {
             background: var(--bg-secondary);
             backdrop-filter: blur(20px);
@@ -136,8 +129,6 @@
             transition: all 0.3s;
             border: none;
             background: transparent;
-            position: relative;
-            overflow: hidden;
         }
 
         .nav-link:hover { color: var(--text-primary); }
@@ -170,7 +161,6 @@
             50% { opacity: 0.4; }
         }
 
-        /* Main Container */
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -185,10 +175,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Search Section */
+        /* Enhanced Search Section */
         .search-hero {
-            max-width: 800px;
-            margin: 100px auto;
+            max-width: 900px;
+            margin: 60px auto;
             text-align: center;
         }
 
@@ -204,9 +194,33 @@
 
         .search-subtitle {
             color: var(--text-secondary);
-            margin-bottom: 48px;
+            margin-bottom: 32px;
             font-size: 1.25rem;
             font-weight: 300;
+        }
+
+        .search-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .search-tab {
+            padding: 8px 16px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .search-tab.active {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--text-primary);
+            border-color: var(--accent);
         }
 
         .search-box {
@@ -235,8 +249,6 @@
             box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 32px rgba(0,0,0,0.4);
         }
 
-        .search-input::placeholder { color: var(--text-muted); }
-
         .search-btn {
             position: absolute;
             right: 12px;
@@ -259,7 +271,31 @@
             box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
         }
 
-        /* Result Card - Glassmorphism */
+        .search-filters {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 6px 12px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-light);
+            border-color: var(--accent);
+        }
+
         .result-card {
             background: var(--bg-secondary);
             backdrop-filter: blur(20px);
@@ -269,12 +305,10 @@
             margin-top: 40px;
             display: none;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: left;
         }
 
-        .result-card.active {
-            display: block;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        .result-card.active { display: block; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(40px) scale(0.95); }
@@ -307,12 +341,7 @@
         }
 
         .result-body { padding: 40px; }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
+        .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
 
         .result-item {
             padding: 24px;
@@ -364,68 +393,318 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Login */
-        .login-container {
-            max-width: 480px;
-            margin: 120px auto;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
         }
 
-        .login-card {
+        .stat-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .stat-card:hover::before { opacity: 1; }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .stat-title { font-size: 0.9375rem; color: var(--text-secondary); font-weight: 500; }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+
+        /* Upload Section */
+        .upload-section {
             background: var(--bg-secondary);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
+            border: 2px dashed rgba(239, 68, 68, 0.3);
             border-radius: 24px;
-            padding: 48px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-
-        .login-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-align: center;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .login-subtitle {
-            color: var(--text-secondary);
+            padding: 60px 40px;
             text-align: center;
             margin-bottom: 40px;
-            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .form-group { margin-bottom: 24px; }
+        .upload-section:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
+        }
 
-        .form-label {
-            display: block;
+        .upload-section.dragover {
+            border-color: var(--accent);
+            background: rgba(220, 38, 38, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 2rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 40px rgba(220, 38, 38, 0.2);
+        }
+
+        .upload-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 12px; }
+        .upload-hint { color: var(--text-muted); font-size: 1rem; }
+        .upload-formats {
+            margin-top: 16px;
             font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 10px;
-            color: var(--text-secondary);
+            color: var(--accent-light);
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
         }
 
-        .form-input {
-            width: 100%;
-            padding: 16px 20px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
+        .file-info {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(0,0,0,0.4);
             border-radius: 12px;
-            color: var(--text-primary);
             font-size: 1rem;
-            outline: none;
-            transition: all 0.3s;
+            color: var(--text-secondary);
+            display: none;
+            border: 1px solid var(--border);
+        }
+
+        .file-info.active { display: block; animation: fadeIn 0.3s; }
+
+        .progress-container {
+            margin-top: 32px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, #fca5a5 100%);
+            width: 0%;
+            transition: width 0.3s ease-out;
+            border-radius: 4px;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .progress-text {
+            margin-top: 12px;
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+
+        .progress-detail {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
         }
 
-        .form-input:focus { 
-            border-color: var(--accent); 
-            box-shadow: 0 0 0 3px var(--accent-glow);
+        /* Preview Modal */
+        .preview-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 32px;
+            max-height: 400px;
+            overflow: auto;
+            display: none;
         }
 
-        .btn {
+        .preview-container.active { display: block; animation: fadeIn 0.3s; }
+
+        .preview-header {
+            padding: 16px 24px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-table {
             width: 100%;
+            border-collapse: collapse;
+        }
+
+        .preview-table th {
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+        }
+
+        .preview-table td {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .preview-table tr:hover td {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .validation-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .validation-badge.valid {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .validation-badge.invalid {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent);
+        }
+
+        /* Table & Layout */
+        .table-container {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 150px;
+            padding: 20px 28px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 150px;
+            padding: 16px 28px;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .table-row:hover { background: rgba(255,255,255,0.03); }
+        .table-row:last-child { border-bottom: none; }
+
+        .col-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--accent-light);
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .col-name { 
+            font-weight: 600;
+            font-size: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .col-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border-radius: 20px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            width: fit-content;
+        }
+
+        .col-actions { display: flex; gap: 12px; }
+
+        .btn {
             padding: 16px;
             background: linear-gradient(135deg, var(--accent) 0%, #b91c1c 100%);
             border: none;
@@ -470,251 +749,60 @@
 
         .btn-sm { padding: 10px 20px; font-size: 0.875rem; }
 
-        .access-denied {
-            margin-top: 20px;
-            padding: 16px;
-            background: rgba(220, 38, 38, 0.1);
-            border: 1px solid rgba(220, 38, 38, 0.2);
-            border-radius: 12px;
-            color: var(--accent-light);
-            text-align: center;
-            font-size: 0.875rem;
-            display: none;
-            backdrop-filter: blur(10px);
+        .login-container { max-width: 480px; margin: 120px auto; }
+        .login-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        /* Dashboard */
-        .dashboard { display: none; }
-        .dashboard.active { display: block; animation: fadeIn 0.5s; }
-
-        .page-header { 
-            margin-bottom: 40px; 
-            text-align: center;
-        }
-
-        .page-title {
-            font-size: 2.5rem;
+        .login-title {
+            font-size: 1.875rem;
             font-weight: 700;
             margin-bottom: 12px;
+            text-align: center;
             background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .page-subtitle { 
+        .login-subtitle {
             color: var(--text-secondary);
-            font-size: 1.125rem;
-        }
-
-        /* Upload Section - Enhanced */
-        .upload-section {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            border: 2px dashed rgba(239, 68, 68, 0.3);
-            border-radius: 24px;
-            padding: 60px 40px;
             text-align: center;
             margin-bottom: 40px;
-            cursor: pointer;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
+            font-size: 0.9375rem;
         }
 
-        .upload-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .upload-section:hover {
-            border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
-        }
-
-        .upload-section:hover::before {
-            opacity: 1;
-        }
-
-        .upload-section.dragover {
-            border-color: var(--accent);
-            background: rgba(220, 38, 38, 0.1);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(220, 38, 38, 0.05) 100%);
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 2rem;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            box-shadow: 0 0 40px rgba(220, 38, 38, 0.2);
-            position: relative;
-            z-index: 1;
-        }
-
-        .upload-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .upload-hint {
-            color: var(--text-muted);
-            font-size: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .upload-formats {
-            margin-top: 16px;
+        .form-group { margin-bottom: 24px; }
+        .form-label {
+            display: block;
             font-size: 0.875rem;
-            color: var(--accent-light);
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: inline-block;
-            position: relative;
-            z-index: 1;
-        }
-
-        .file-info {
-            margin-top: 24px;
-            padding: 20px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 12px;
-            font-size: 1rem;
-            color: var(--text-secondary);
-            display: none;
-            border: 1px solid var(--border);
-            position: relative;
-            z-index: 1;
-        }
-
-        .file-info.active { display: block; animation: fadeIn 0.3s; }
-
-        .progress-container {
-            margin-top: 32px;
-            display: none;
-            position: relative;
-            z-index: 1;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent) 0%, #fca5a5 100%);
-            width: 0%;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 4px;
-            box-shadow: 0 0 20px var(--accent);
-        }
-
-        .progress-text {
-            margin-top: 12px;
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
             font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
         }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 28px;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        .form-input {
             width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(239, 68, 68, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(220, 38, 38, 0.1);
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .stat-title {
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
             color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
             font-family: 'JetBrains Mono', monospace;
-            text-shadow: 0 0 30px rgba(255,255,255,0.1);
         }
 
-        /* Action Bar */
+        .form-input:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
         .action-bar {
             display: flex;
             gap: 16px;
@@ -727,73 +815,21 @@
             justify-content: flex-end;
         }
 
-        /* Table */
-        .table-container {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        .dashboard { display: none; }
+        .dashboard.active { display: block; animation: fadeIn 0.5s; }
+
+        .page-header { margin-bottom: 40px; text-align: center; }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .table-header {
-            display: grid;
-            grid-template-columns: 2fr 1.5fr 1fr 200px;
-            padding: 20px 28px;
-            background: rgba(0,0,0,0.3);
-            border-bottom: 1px solid var(--border);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-        }
+        .page-subtitle { color: var(--text-secondary); font-size: 1.125rem; }
 
-        .table-row {
-            display: grid;
-            grid-template-columns: 2fr 1.5fr 1fr 200px;
-            padding: 20px 28px;
-            border-bottom: 1px solid var(--border);
-            align-items: center;
-            transition: all 0.3s;
-        }
-
-        .table-row:hover { 
-            background: rgba(255,255,255,0.03);
-            transform: translateX(4px);
-        }
-
-        .table-row:last-child { border-bottom: none; }
-
-        .col-id {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9375rem;
-            color: var(--accent-light);
-            font-weight: 500;
-        }
-
-        .col-name { 
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .col-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            background: rgba(34, 197, 94, 0.1);
-            color: var(--success);
-            border-radius: 20px;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-
-        .col-actions { display: flex; gap: 12px; }
-
-        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -816,10 +852,13 @@
             backdrop-filter: blur(30px);
             border: 1px solid var(--border);
             border-radius: 24px;
-            max-width: 480px;
+            max-width: 600px;
             width: 100%;
+            max-height: 80vh;
             overflow: hidden;
             box-shadow: 0 25px 80px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-header {
@@ -828,19 +867,14 @@
             background: rgba(220, 38, 38, 0.1);
         }
 
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--accent-light);
-        }
+        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: var(--accent-light); }
+        .modal-subtitle { color: var(--text-secondary); font-size: 0.9375rem; }
 
-        .modal-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.9375rem;
+        .modal-body { 
+            padding: 32px; 
+            overflow-y: auto;
+            flex: 1;
         }
-
-        .modal-body { padding: 32px; }
 
         .modal-footer {
             padding: 24px 32px;
@@ -850,7 +884,6 @@
             justify-content: flex-end;
         }
 
-        /* Toast */
         .toast-container {
             position: fixed;
             bottom: 32px;
@@ -880,6 +913,7 @@
         .toast.show { transform: translateX(0); }
         .toast.success { border-left-color: var(--success); }
         .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--info); }
 
         .empty-state {
             padding: 80px;
@@ -900,14 +934,73 @@
             border: 1px solid var(--border);
         }
 
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .duplicate-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .duplicate-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .duplicate-item:last-child { border-bottom: none; }
+
         .hidden { display: none !important; }
 
-        /* Responsive */
         @media (max-width: 1024px) {
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .table-header, .table-row { grid-template-columns: 1fr 1fr; }
             .table-header > div:nth-child(3), .table-row > div:nth-child(3),
             .table-header > div:nth-child(4), .table-row > div:nth-child(4) { display: none; }
+            .result-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 640px) {
@@ -915,26 +1008,9 @@
             .top-nav { padding: 0 20px; height: 60px; }
             .nav-links { display: none; }
             .stats-grid { grid-template-columns: 1fr; }
-            .result-grid { grid-template-columns: 1fr; }
             .action-bar { flex-direction: column; }
             .search-title { font-size: 2.5rem; }
-            .search-input { font-size: 1rem; padding: 20px 24px; padding-right: 120px; }
-            .search-btn { padding: 12px 24px; }
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+            .search-filters { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
@@ -958,15 +1034,27 @@
     </nav>
 
     <main class="main-container">
-        <!-- Search Section -->
         <section id="section-search" class="section active">
             <div class="search-hero">
                 <h1 class="search-title">Target Acquisition</h1>
-                <p class="search-subtitle">Search the intelligence database by Discord ID</p>
+                <p class="search-subtitle">Advanced intelligence search with multi-criteria filtering</p>
                 
+                <div class="search-tabs">
+                    <button class="search-tab active" onclick="setSearchType('id')" id="tab-id">Discord ID</button>
+                    <button class="search-tab" onclick="setSearchType('username')" id="tab-username">Username</button>
+                    <button class="search-tab" onclick="setSearchType('email')" id="tab-email">Email</button>
+                    <button class="search-tab" onclick="setSearchType('name')" id="tab-name">Codename</button>
+                </div>
+
                 <div class="search-box">
-                    <input type="text" class="search-input" id="searchId" placeholder="Enter Discord ID (18-20 digits)...">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Enter Discord ID (18-20 digits)...">
                     <button class="search-btn" onclick="search()">Search</button>
+                </div>
+
+                <div class="search-filters">
+                    <span class="filter-tag" onclick="toggleFilter(this, 'exact')">Exact Match</span>
+                    <span class="filter-tag active" onclick="toggleFilter(this, 'partial')">Partial Match</span>
+                    <span class="filter-tag" onclick="toggleFilter(this, 'regex')">Regex Mode</span>
                 </div>
 
                 <div id="resultCard" class="result-card">
@@ -1005,12 +1093,11 @@
                 </div>
 
                 <div id="notFound" class="not-found">
-                    ⚠️ Target not found in database. Please verify the ID and try again.
+                    ⚠️ Target not found in database. Please verify your search criteria.
                 </div>
             </div>
         </section>
 
-        <!-- Admin Section -->
         <section id="section-admin" class="section">
             <div id="loginPanel" class="login-container">
                 <div class="login-card">
@@ -1067,15 +1154,16 @@
                 </div>
 
                 <div class="action-bar">
-                    <button class="btn btn-secondary btn-sm" onclick="exportData()">📤 Export Data</button>
-                    <button class="btn btn-danger btn-sm" onclick="showPurge()">🗑️ Purge Database</button>
+                    <button class="btn btn-secondary btn-sm" onclick="exportData()">📤 Export JSON</button>
+                    <button class="btn btn-secondary btn-sm" onclick="showDuplicates()">📋 View Duplicates</button>
+                    <button class="btn btn-danger btn-sm" onclick="showPurge()">🗑️ Purge All</button>
                 </div>
 
                 <div class="upload-section" id="dropZone">
                     <div class="upload-icon">↑</div>
                     <div class="upload-title">Upload Intelligence Data</div>
                     <div class="upload-hint">Drag and drop SQL/JSON/CSV files here or click to browse</div>
-                    <div class="upload-formats">Supports: .sql .json .csv .txt</div>
+                    <div class="upload-formats">Smart Parser: Auto-detects columns • Skips IPs • Validates IDs</div>
                     
                     <div class="file-info" id="fileInfo">
                         <div id="fileName" style="font-weight: 600; color: var(--text-primary);"></div>
@@ -1087,8 +1175,20 @@
                             <div class="progress-fill" id="progressBar"></div>
                         </div>
                         <div class="progress-text" id="progressText">Initializing...</div>
+                        <div class="progress-detail" id="progressDetail">0/0 processed</div>
                     </div>
                     <input type="file" id="fileInput" style="display: none;" accept=".sql,.json,.csv,.txt">
+                </div>
+
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-header">
+                        <span>📊 Import Preview (First 10 Rows)</span>
+                        <button class="btn btn-sm btn-secondary" onclick="confirmImport()" style="width: auto;">✓ Confirm Import</button>
+                    </div>
+                    <table class="preview-table" id="previewTable">
+                        <thead id="previewHead"></thead>
+                        <tbody id="previewBody"></tbody>
+                    </table>
                 </div>
 
                 <div class="table-container">
@@ -1113,10 +1213,10 @@
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">⚠️ Confirm Action</div>
-                <div class="modal-subtitle">This action is irreversible</div>
+                <div class="modal-title" id="modalTitle">⚠️ Confirm Action</div>
+                <div class="modal-subtitle" id="modalSubtitle">This action is irreversible</div>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modalBody">
                 <p id="modalText" style="color: var(--text-secondary); line-height: 1.6;">Are you sure you want to proceed?</p>
             </div>
             <div class="modal-footer">
@@ -1129,12 +1229,15 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // Configuration
+        // Config
         const SUPABASE_URL = 'https://shpflhdeswhotrctzmqj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocGZsaGRlc3dob3RyY3R6bXFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjExNzIsImV4cCI6MjA4OTU5NzE3Mn0.YFWgiqX7K6iMQ7HFdjDmHD5E1ouhFhRArqni0LBnMmA';
         
         let db = null;
         let useSQL = false;
+        let currentSearchType = 'id';
+        let currentFilter = 'partial';
+        let pendingImport = [];
         
         if (!SUPABASE_URL.includes('YOUR_')) {
             try {
@@ -1143,10 +1246,13 @@
             } catch(e) {}
         }
 
-        // IndexedDB Setup
-        const DB_NAME = 'EstedevDB_v2';
+        // IndexedDB
+        const DB_NAME = 'EstedevDB_v4';
         const STORE_NAME = 'targets';
         let idb = null;
+        let totalRecords = 0;
+        let currentPage = 1;
+        const PAGE_SIZE = 100;
 
         async function initIDB() {
             return new Promise((resolve, reject) => {
@@ -1161,40 +1267,156 @@
                     if (!db.objectStoreNames.contains(STORE_NAME)) {
                         const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
                         store.createIndex('discord_id', 'discord_id', { unique: true });
+                        store.createIndex('username', 'username', { unique: false });
+                        store.createIndex('email', 'email', { unique: false });
                     }
                 };
             });
         }
 
-        async function addToIDB(target) {
+        // Validation: Discord ID mi yoksa IP mi?
+        function isValidDiscordId(value) {
+            if (!value) return false;
+            const str = value.toString().trim();
+            
+            // IP adresi kontrolü (192.168.1.1 gibi)
+            if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(str)) return false;
+            
+            // Discord ID formatı: 17-20 haneli sayı, 0 ile başlamaz genelde
+            if (!/^\d{17,20}$/.test(str)) return false;
+            
+            // Timestamp kontrolü (Discord ID'ler Snowflake formatındadır ve yaklaşık 2015 sonrası tarihleri içerir)
+            // Basit check: 17 haneli ID'ler genelde 2016 sonrasıdır (epoch: 1420070400000)
+            const timestamp = parseInt(str) >> 22;
+            const date = new Date(timestamp + 1420070400000);
+            return date.getFullYear() > 2015 && date.getFullYear() < 2100;
+        }
+
+        async function batchInsert(targets) {
             return new Promise((resolve) => {
                 const tx = idb.transaction([STORE_NAME], 'readwrite');
                 const store = tx.objectStore(STORE_NAME);
-                
-                // Check for existing
                 const index = store.index('discord_id');
-                const getReq = index.get(target.discord_id);
                 
-                getReq.onsuccess = () => {
-                    if (getReq.result) {
-                        resolve(null); // Duplicate
-                    } else {
-                        const request = store.add(target);
-                        request.onsuccess = () => resolve(request.result);
-                        request.onerror = () => resolve(null);
+                let inserted = 0;
+                let skipped = 0;
+                let processed = 0;
+                
+                tx.oncomplete = () => resolve({ inserted, skipped });
+                
+                function processNext(i) {
+                    if (i >= targets.length) return;
+                    
+                    const target = targets[i];
+                    if (!target || !isValidDiscordId(target.discord_id)) {
+                        skipped++;
+                        processed++;
+                        if (processed % 1000 === 0) setTimeout(() => processNext(i + 1), 0);
+                        else processNext(i + 1);
+                        return;
                     }
-                };
-                getReq.onerror = () => resolve(null);
+                    
+                    const checkReq = index.get(target.discord_id);
+                    checkReq.onsuccess = () => {
+                        if (!checkReq.result) {
+                            const addReq = store.add(target);
+                            addReq.onsuccess = () => inserted++;
+                            addReq.onerror = () => skipped++;
+                        } else {
+                            skipped++;
+                        }
+                        processed++;
+                        
+                        if (processed % 1000 === 0) {
+                            updateStats();
+                            setTimeout(() => processNext(i + 1), 0);
+                        } else {
+                            processNext(i + 1);
+                        }
+                    };
+                    checkReq.onerror = () => {
+                        skipped++;
+                        processed++;
+                        processNext(i + 1);
+                    };
+                }
+                
+                processNext(0);
             });
         }
 
-        async function getAllFromIDB() {
+        async function getCount() {
             return new Promise((resolve) => {
                 const tx = idb.transaction([STORE_NAME], 'readonly');
                 const store = tx.objectStore(STORE_NAME);
-                const request = store.getAll();
+                const request = store.count();
                 request.onsuccess = () => resolve(request.result);
-                request.onerror = () => resolve([]);
+                request.onerror = () => resolve(0);
+            });
+        }
+
+        async function getPage(page, pageSize) {
+            return new Promise((resolve) => {
+                const tx = idb.transaction([STORE_NAME], 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.openCursor(null, 'prev');
+                const results = [];
+                let skipped = (page - 1) * pageSize;
+                let count = 0;
+                
+                request.onsuccess = (e) => {
+                    const cursor = e.target.result;
+                    if (!cursor || count >= pageSize) {
+                        resolve(results);
+                        return;
+                    }
+                    
+                    if (skipped > 0) {
+                        skipped--;
+                        cursor.continue();
+                    } else {
+                        results.push(cursor.value);
+                        count++;
+                        cursor.continue();
+                    }
+                };
+                request.onerror = () => resolve(results);
+            });
+        }
+
+        async function searchByIndex(indexName, value, exact = false) {
+            return new Promise((resolve) => {
+                const tx = idb.transaction([STORE_NAME], 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const index = store.index(indexName);
+                const results = [];
+                
+                const request = index.openCursor();
+                request.onsuccess = (e) => {
+                    const cursor = e.target.result;
+                    if (!cursor) {
+                        resolve(results);
+                        return;
+                    }
+                    
+                    const record = cursor.value;
+                    const recordValue = record[indexName];
+                    
+                    if (recordValue) {
+                        if (exact) {
+                            if (recordValue.toLowerCase() === value.toLowerCase()) {
+                                results.push(record);
+                            }
+                        } else {
+                            if (recordValue.toLowerCase().includes(value.toLowerCase())) {
+                                results.push(record);
+                            }
+                        }
+                    }
+                    
+                    cursor.continue();
+                };
+                request.onerror = () => resolve(results);
             });
         }
 
@@ -1216,79 +1438,111 @@
             });
         }
 
-        // Navigation
+        // UI Functions
         function changeSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
             document.getElementById('section-' + id).classList.add('active');
             event.target.classList.add('active');
+            if (id === 'admin' && idb) {
+                loadTable();
+            }
         }
 
-        // Search Function
+        function setSearchType(type) {
+            currentSearchType = type;
+            document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + type).classList.add('active');
+            
+            const input = document.getElementById('searchInput');
+            const placeholders = {
+                'id': 'Enter Discord ID (18-20 digits)...',
+                'username': 'Enter username...',
+                'email': 'Enter email address...',
+                'name': 'Enter codename...'
+            };
+            input.placeholder = placeholders[type];
+        }
+
+        function toggleFilter(el, filter) {
+            document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            currentFilter = filter;
+        }
+
         async function search() {
-            const id = document.getElementById('searchId').value.trim();
-            if (!id) return toast('Please enter a Discord ID', 'error');
-            if (!/^\d{17,20}$/.test(id)) return toast('Invalid Discord ID format', 'error');
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return toast('Please enter a search term', 'error');
 
             document.getElementById('resultCard').classList.remove('active');
             document.getElementById('notFound').style.display = 'none';
 
             let target = null;
 
-            if (idb) {
-                const all = await getAllFromIDB();
-                target = all.find(t => t.discord_id === id);
-            }
-
-            if (!target && useSQL && db) {
-                try {
-                    const { data } = await db.from('targets').select('*').eq('discord_id', id).single();
-                    if (data) target = data;
-                } catch(e) {}
-            }
-
-            if (target) {
-                document.getElementById('resName').textContent = target.name || 'Unknown';
-                document.getElementById('resUser').textContent = target.username ? '@' + target.username : '-';
-                document.getElementById('resId').textContent = target.discord_id;
-                document.getElementById('resIdShort').textContent = target.discord_id.substring(0, 12) + '...';
-                document.getElementById('resEmail').textContent = target.email || '-';
-                document.getElementById('resPhone').textContent = target.phone || '-';
-                document.getElementById('resNotes').textContent = target.notes || '-';
-                document.getElementById('resultCard').classList.add('active');
+            if (currentSearchType === 'id') {
+                if (!isValidDiscordId(query)) {
+                    toast('Invalid Discord ID format (IPs are filtered)', 'warning');
+                    return;
+                }
+                
+                const tx = idb.transaction([STORE_NAME], 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const index = store.index('discord_id');
+                const request = index.get(query);
+                
+                request.onsuccess = () => {
+                    if (request.result) showResult(request.result);
+                    else document.getElementById('notFound').style.display = 'block';
+                };
             } else {
-                document.getElementById('notFound').style.display = 'block';
+                const results = await searchByIndex(currentSearchType, query, currentFilter === 'exact');
+                if (results.length > 0) {
+                    showResult(results[0]);
+                    if (results.length > 1) {
+                        toast(`Found ${results.length} matches, showing first`, 'info');
+                    }
+                } else {
+                    document.getElementById('notFound').style.display = 'block';
+                }
             }
         }
 
-        // Admin Login
+        function showResult(target) {
+            document.getElementById('resName').textContent = target.name || 'Unknown';
+            document.getElementById('resUser').textContent = target.username ? '@' + target.username : '-';
+            document.getElementById('resId').textContent = target.discord_id;
+            document.getElementById('resIdShort').textContent = target.discord_id.substring(0, 12) + '...';
+            document.getElementById('resEmail').textContent = target.email || '-';
+            document.getElementById('resPhone').textContent = target.phone || '-';
+            document.getElementById('resNotes').textContent = target.notes || '-';
+            document.getElementById('resultCard').classList.add('active');
+        }
+
         async function login() {
             if (document.getElementById('adminPass').value === 'cemreyiseviyorum') {
                 document.getElementById('loginPanel').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('active');
                 await initIDB();
-                updateStats();
+                await updateStats();
                 loadTable();
-                toast('Access granted. Welcome to Command Center.', 'success');
+                toast('Access granted. Smart Parser active.', 'success');
             } else {
                 const denied = document.getElementById('accessDenied');
                 denied.style.display = 'block';
-                denied.style.animation = 'shake 0.5s';
                 setTimeout(() => denied.style.display = 'none', 3000);
             }
         }
 
-        // Update Statistics
         async function updateStats() {
-            const all = await getAllFromIDB();
-            document.getElementById('statTotal').textContent = all.length.toLocaleString();
-            document.getElementById('dbSize').textContent = all.length.toLocaleString();
-            
-            const memory = JSON.stringify(all).length / 1024 / 1024;
+            const count = await getCount();
+            totalRecords = count;
+            document.getElementById('statTotal').textContent = count.toLocaleString();
+            document.getElementById('dbSize').textContent = count.toLocaleString();
+            const memory = (count * 200) / 1024 / 1024;
             document.getElementById('statMemory').textContent = memory.toFixed(1);
         }
 
-        // File Upload Handling
+        // Smart File Upload
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
 
@@ -1319,17 +1573,40 @@
             document.getElementById('fileSize').textContent = formatFileSize(file.size);
             
             document.getElementById('progressBox').style.display = 'block';
-            updateProgress(0, 'Reading file...');
+            updateProgress(0, 'Analyzing file structure...', 'Reading...');
             
             try {
                 const text = await file.text();
-                updateProgress(10, 'Parsing SQL data...');
+                const extension = file.name.split('.').pop().toLowerCase();
                 
-                // Parse and import
-                await parseAndImport(text, file.name);
+                updateProgress(20, 'Smart parsing in progress...', 'Detecting columns...');
+                
+                let targets = [];
+                if (extension === 'sql') {
+                    targets = await parseSmartSQL(text);
+                } else if (extension === 'json') {
+                    targets = parseJSON(text);
+                } else if (extension === 'csv') {
+                    targets = parseCSV(text);
+                }
+                
+                // Filter invalids
+                const validTargets = targets.filter(t => isValidDiscordId(t.discord_id));
+                const invalidCount = targets.length - validTargets.length;
+                
+                if (invalidCount > 0) {
+                    toast(`Filtered ${invalidCount} invalid entries (IPs, wrong formats)`, 'warning');
+                }
+                
+                pendingImport = validTargets;
+                
+                // Show preview
+                showPreview(validTargets.slice(0, 10));
+                
+                updateProgress(100, `Ready to import ${validTargets.length.toLocaleString()} targets`, 'Waiting for confirmation...');
                 
             } catch (error) {
-                toast('Error reading file: ' + error.message, 'error');
+                toast('Error: ' + error.message, 'error');
                 document.getElementById('progressBox').style.display = 'none';
             }
         }
@@ -1342,240 +1619,114 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        function updateProgress(percent, text) {
+        function updateProgress(percent, text, detail) {
             document.getElementById('progressBar').style.width = percent + '%';
             document.getElementById('progressText').textContent = text;
+            if (detail) document.getElementById('progressDetail').textContent = detail;
         }
 
-        // ROBUST SQL PARSER - Ignores comments and headers
-        async function parseAndImport(text, filename) {
-            const extension = filename.split('.').pop().toLowerCase();
-            let targets = [];
-            
-            updateProgress(20, 'Analyzing format...');
-            
-            if (extension === 'json') {
-                try {
-                    const data = JSON.parse(text);
-                    targets = Array.isArray(data) ? data : [data];
-                } catch (e) {
-                    toast('Invalid JSON format', 'error');
-                    return;
-                }
-            } else if (extension === 'csv') {
-                targets = parseCSV(text);
-            } else if (extension === 'sql') {
-                targets = parseRobustSQL(text);
-            } else if (extension === 'txt') {
-                targets = parseTXT(text);
-            }
-            
-            if (targets.length === 0) {
-                toast('No valid targets found in file', 'error');
-                document.getElementById('progressBox').style.display = 'none';
-                return;
-            }
-            
-            updateProgress(30, `Found ${targets.length.toLocaleString()} targets. Importing...`);
-            
-            let loaded = 0;
-            let skipped = 0;
-            const batchSize = 500;
-            
-            for (let i = 0; i < targets.length; i += batchSize) {
-                const batch = targets.slice(i, i + batchSize);
-                
-                for (const target of batch) {
-                    if (!target.discord_id || !/^\d{17,20}$/.test(target.discord_id)) continue;
-                    
-                    const id = await addToIDB(target);
-                    if (id) loaded++; else skipped++;
-                }
-                
-                const progress = 30 + ((i + batch.length) / targets.length) * 70;
-                updateProgress(
-                    progress, 
-                    `Importing... ${loaded.toLocaleString()} / ${targets.length.toLocaleString()}`
-                );
-                
-                document.getElementById('statLoaded').textContent = loaded.toLocaleString();
-                document.getElementById('statSkipped').textContent = skipped.toLocaleString();
-                
-                // Allow UI to breathe
-                if (i % 2000 === 0) await new Promise(r => setTimeout(r, 10));
-            }
-            
-            updateProgress(100, `Complete! ${loaded.toLocaleString()} targets imported`);
-            
-            setTimeout(() => {
-                document.getElementById('progressBox').style.display = 'none';
-                document.getElementById('fileInfo').classList.remove('active');
-                document.getElementById('fileInput').value = '';
-            }, 2000);
-            
-            toast(`Success: ${loaded.toLocaleString()} imported, ${skipped} duplicates skipped`, 'success');
-            updateStats();
-            loadTable();
-        }
-
-        // Advanced SQL Parser that ignores comments and headers
-        function parseRobustSQL(text) {
+        // SMART SQL PARSER - Kolon isimlerini tespit eder, IP'leri atar
+        async function parseSmartSQL(text) {
             const targets = [];
             
-            // Remove SQL comments (both -- and /* */ and #)
-            let cleaned = text
-                .replace(/\/\*[\s\S]*?\*\//g, '') // /* */ comments
-                .replace(/--.*$/gm, '')           // -- line comments
-                .replace(/#.*$/gm, '');           // # line comments
+            // Yorumları temizle
+            const cleaned = text
+                .replace(/\/\*[\s\S]*?\*\//g, '')
+                .replace(/--.*$/gm, '')
+                .replace(/#.*$/gm, '');
             
-            // Find all INSERT statements
-            const insertRegex = /INSERT\s+INTO\s+[`"]?\w+[`"]?\s*\([^)]*\)\s*VALUES\s*([\s\S]*?)(?:;|$)/gi;
+            // Kolon isimlerini tespit et: INSERT INTO table (col1, col2, col3)
+            const columnRegex = /INSERT\s+INTO\s+[`"]?\w+[`"]?\s*\(([^)]+)\)/i;
             
-            let match;
-            while ((match = insertRegex.exec(cleaned)) !== null) {
-                const valuesSection = match[1];
+            let columnMap = {
+                discord_id: 0,
+                name: 1,
+                username: 2,
+                email: 3,
+                phone: 4,
+                avatar_url: 5,
+                notes: 6
+            };
+            
+            // VALUES kısımlarını bul
+            const lines = cleaned.split('\n');
+            let currentInsert = '';
+            let currentColumns = null;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line || line.startsWith('SET') || line.startsWith('DROP') || line.startsWith('CREATE')) continue;
                 
-                // Extract individual value groups
-                // Handle both: VALUES (...), (...) and multi-line
-                const valueGroups = extractValueGroups(valuesSection);
-                
-                for (const group of valueGroups) {
-                    const values = parseValueGroup(group);
-                    if (values && values.length >= 1) {
-                        const discordId = cleanValue(values[0]);
-                        if (/^\d{17,20}$/.test(discordId)) {
-                            targets.push({
-                                discord_id: discordId,
-                                name: cleanValue(values[1]) || '',
-                                username: cleanValue(values[2]) || '',
-                                email: cleanValue(values[3]) || '',
-                                phone: cleanValue(values[4]) || '',
-                                avatar_url: cleanValue(values[5]) || '',
-                                notes: cleanValue(values[6]) || ''
-                            });
-                        }
+                // Kolon tanımını bul
+                if (line.startsWith('INSERT')) {
+                    const colMatch = line.match(columnRegex);
+                    if (colMatch) {
+                        const cols = colMatch[1].split(',').map(c => c.trim().replace(/[`"]/g, ''));
+                        currentColumns = cols;
+                        // Map columns dynamically
+                        cols.forEach((col, idx) => {
+                            if (col.includes('discord') || col.includes('id') && !col.includes('avatar')) columnMap.discord_id = idx;
+                            if (col.includes('name') && !col.includes('user')) columnMap.name = idx;
+                            if (col.includes('user')) columnMap.username = idx;
+                            if (col.includes('email')) columnMap.email = idx;
+                            if (col.includes('phone')) columnMap.phone = idx;
+                            if (col.includes('avatar')) columnMap.avatar_url = idx;
+                            if (col.includes('note') || col.includes('desc')) columnMap.notes = idx;
+                        });
                     }
+                    currentInsert = line;
+                } else if (currentInsert) {
+                    currentInsert += ' ' + line;
                 }
-            }
-            
-            // Fallback: Try line-by-line for non-standard formats
-            if (targets.length === 0) {
-                const lines = cleaned.split('\n');
-                for (const line of lines) {
-                    const trimmed = line.trim();
-                    if (!trimmed || !trimmed.includes('VALUES')) continue;
-                    
-                    const valMatch = trimmed.match(/VALUES\s*\((.*)\)/i);
-                    if (valMatch) {
-                        const values = parseValueGroup(valMatch[1]);
-                        if (values && values[0]) {
-                            const discordId = cleanValue(values[0]);
-                            if (/^\d{17,20}$/.test(discordId)) {
+                
+                // Eğer satır VALUES içeriyorsa ve tamamlandıysa
+                if (currentInsert && line.includes(')')) {
+                    const valuesMatch = currentInsert.match(/VALUES\s+(.+)$/i);
+                    if (valuesMatch) {
+                        const groups = extractValueGroups(valuesMatch[1]);
+                        groups.forEach(group => {
+                            const vals = parseValueGroup(group);
+                            // IP kontrolü - ilk kolon IP mi?
+                            if (vals[0] && /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(vals[0])) {
+                                return; // Skip IP addresses
+                            }
+                            
+                            if (vals[columnMap.discord_id]) {
                                 targets.push({
-                                    discord_id: discordId,
-                                    name: cleanValue(values[1]) || '',
-                                    username: cleanValue(values[2]) || '',
-                                    email: cleanValue(values[3]) || '',
-                                    phone: cleanValue(values[4]) || '',
-                                    avatar_url: cleanValue(values[5]) || '',
-                                    notes: cleanValue(values[6]) || ''
+                                    discord_id: cleanValue(vals[columnMap.discord_id]),
+                                    name: columnMap.name < vals.length ? cleanValue(vals[columnMap.name]) : '',
+                                    username: columnMap.username < vals.length ? cleanValue(vals[columnMap.username]) : '',
+                                    email: columnMap.email < vals.length ? cleanValue(vals[columnMap.email]) : '',
+                                    phone: columnMap.phone < vals.length ? cleanValue(vals[columnMap.phone]) : '',
+                                    avatar_url: columnMap.avatar_url < vals.length ? cleanValue(vals[columnMap.avatar_url]) : '',
+                                    notes: columnMap.notes < vals.length ? cleanValue(vals[columnMap.notes]) : ''
                                 });
                             }
-                        }
+                        });
                     }
+                    currentInsert = '';
+                }
+                
+                if (i % 1000 === 0) {
+                    updateProgress(20 + (i / lines.length) * 60, `Parsing line ${i.toLocaleString()}...`, `Found ${targets.length} valid targets`);
+                    await new Promise(r => setTimeout(r, 0));
                 }
             }
             
             return targets;
         }
 
-        function extractValueGroups(valuesText) {
-            const groups = [];
-            let current = '';
-            let depth = 0;
-            
-            for (let i = 0; i < valuesText.length; i++) {
-                const char = valuesText[i];
-                
-                if (char === '(') {
-                    if (depth === 0) {
-                        current = '';
-                    } else {
-                        current += char;
-                    }
-                    depth++;
-                } else if (char === ')') {
-                    depth--;
-                    if (depth === 0) {
-                        groups.push(current);
-                        current = '';
-                    } else {
-                        current += char;
-                    }
-                } else if (depth > 0) {
-                    current += char;
-                }
-            }
-            
-            return groups;
-        }
-
-        function parseValueGroup(group) {
-            const values = [];
-            let current = '';
-            let inQuote = false;
-            let quoteChar = null;
-            
-            for (let i = 0; i < group.length; i++) {
-                const char = group[i];
-                
-                if (!inQuote && (char === "'" || char === '"')) {
-                    inQuote = true;
-                    quoteChar = char;
-                } else if (inQuote && char === quoteChar) {
-                    // Check for escaped quote (doubled quote)
-                    if (group[i + 1] === quoteChar) {
-                        current += char;
-                        i++; // Skip next
-                    } else {
-                        inQuote = false;
-                        quoteChar = null;
-                    }
-                } else if (!inQuote && char === ',') {
-                    values.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            
-            if (current.trim()) values.push(current.trim());
-            return values;
-        }
-
-        function cleanValue(val) {
-            if (!val) return '';
-            val = val.trim();
-            if (val === 'NULL' || val === 'null') return '';
-            // Remove surrounding quotes
-            if ((val.startsWith("'") && val.endsWith("'")) || 
-                (val.startsWith('"') && val.endsWith('"'))) {
-                val = val.slice(1, -1);
-            }
-            // Unescape quotes
-            return val.replace(/''/g, "'").replace(/""/g, '"').replace(/\\'/g, "'").replace(/\\"/g, '"');
+        function parseJSON(text) {
+            const data = JSON.parse(text);
+            return Array.isArray(data) ? data : [data];
         }
 
         function parseCSV(text) {
             const lines = text.split('\n');
             const targets = [];
-            
             for (const line of lines) {
-                const trimmed = line.trim();
-                if (!trimmed || trimmed.startsWith('#')) continue;
-                
-                const parts = trimmed.split(',').map(p => p.trim());
-                if (parts.length >= 1 && /^\d{17,20}$/.test(parts[0])) {
+                const parts = line.split(',').map(p => p.trim());
+                if (parts[0] && isValidDiscordId(parts[0])) {
                     targets.push({
                         discord_id: parts[0],
                         name: parts[1] || '',
@@ -1587,79 +1738,224 @@
                     });
                 }
             }
-            
             return targets;
         }
 
-        function parseTXT(text) {
-            const lines = text.split('\n');
-            const targets = [];
+        function extractValueGroups(text) {
+            const groups = [];
+            let current = '';
+            let depth = 0;
             
-            for (const line of lines) {
-                const trimmed = line.trim();
-                if (!trimmed) continue;
-                
-                const match = trimmed.match(/(\d{17,20})/);
-                if (match) {
-                    const id = match[1];
-                    const rest = trimmed.replace(id, '').trim();
-                    const parts = rest.split(',').map(s => s.trim()).filter(s => s);
-                    
-                    targets.push({
-                        discord_id: id,
-                        name: parts[0] || '',
-                        username: parts[1] || '',
-                        email: parts[2] || '',
-                        phone: parts[3] || '',
-                        avatar_url: parts[4] || '',
-                        notes: parts.slice(5).join(', ')
-                    });
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                if (char === '(') {
+                    if (depth === 0) current = '';
+                    else current += char;
+                    depth++;
+                } else if (char === ')') {
+                    depth--;
+                    if (depth === 0) groups.push(current);
+                    else current += char;
+                } else if (depth > 0) {
+                    current += char;
                 }
             }
-            
-            return targets;
+            return groups;
         }
 
-        // Load Table
-        async function loadTable() {
-            const all = await getAllFromIDB();
-            const recent = all.slice(-100).reverse();
+        function parseValueGroup(group) {
+            const values = [];
+            let current = '';
+            let inQuote = false;
+            let quoteChar = null;
+            
+            for (let i = 0; i < group.length; i++) {
+                const char = group[i];
+                if (!inQuote && (char === "'" || char === '"')) {
+                    inQuote = true;
+                    quoteChar = char;
+                } else if (inQuote && char === quoteChar) {
+                    if (group[i + 1] === quoteChar) {
+                        current += char;
+                        i++;
+                    } else {
+                        inQuote = false;
+                    }
+                } else if (!inQuote && char === ',') {
+                    values.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            if (current.trim()) values.push(current.trim());
+            return values;
+        }
+
+        function cleanValue(val) {
+            if (!val) return '';
+            val = val.trim();
+            if (val === 'NULL' || val === 'null') return '';
+            if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
+                val = val.slice(1, -1);
+            }
+            return val.replace(/''/g, "'").replace(/""/g, '"');
+        }
+
+        function showPreview(targets) {
+            const container = document.getElementById('previewContainer');
+            const thead = document.getElementById('previewHead');
+            const tbody = document.getElementById('previewBody');
+            
+            if (targets.length === 0) {
+                container.classList.remove('active');
+                return;
+            }
+            
+            thead.innerHTML = `
+                <tr>
+                    <th>Discord ID <span class="validation-badge valid">✓ Validated</span></th>
+                    <th>Codename</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                </tr>
+            `;
+            
+            tbody.innerHTML = targets.map(t => `
+                <tr>
+                    <td>${t.discord_id || '-'}</td>
+                    <td>${t.name || '-'}</td>
+                    <td>${t.username || '-'}</td>
+                    <td>${t.email || '-'}</td>
+                </tr>
+            `).join('');
+            
+            container.classList.add('active');
+        }
+
+        async function confirmImport() {
+            if (pendingImport.length === 0) return;
+            
+            document.getElementById('previewContainer').classList.remove('active');
+            updateProgress(0, 'Importing to database...', '0/' + pendingImport.length);
+            
+            const result = await batchInsert(pendingImport);
+            
+            document.getElementById('statLoaded').textContent = result.inserted.toLocaleString();
+            document.getElementById('statSkipped').textContent = result.skipped.toLocaleString();
+            
+            toast(`Imported ${result.inserted}, skipped ${result.skipped} duplicates`, 'success');
+            await updateStats();
+            loadTable();
+            
+            setTimeout(() => {
+                document.getElementById('progressBox').style.display = 'none';
+                document.getElementById('fileInfo').classList.remove('active');
+                document.getElementById('fileInput').value = '';
+            }, 2000);
+            
+            pendingImport = [];
+        }
+
+        async function loadTable(page = 1) {
+            currentPage = page;
+            const targets = await getPage(page, PAGE_SIZE);
             
             const container = document.getElementById('tableContent');
             
-            if (recent.length === 0) {
+            if (targets.length === 0 && page === 1) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📋</div>
                         <div>No targets in database</div>
-                        <div style="font-size: 0.875rem; margin-top: 8px; opacity: 0.6;">Upload data to begin</div>
                     </div>
                 `;
                 return;
             }
             
-            container.innerHTML = recent.map(target => `
+            let html = targets.map(target => `
                 <div class="table-row">
-                    <div class="col-id">${target.discord_id}</div>
-                    <div class="col-name">${target.name || 'Unknown'}</div>
+                    <div class="col-id" title="${target.discord_id}">${target.discord_id}</div>
+                    <div class="col-name" title="${target.name || 'Unknown'}">${target.name || 'Unknown'}</div>
                     <div><span class="col-status">● Active</span></div>
                     <div class="col-actions">
                         <button class="btn btn-danger btn-sm" onclick="deleteTarget(${target.id})">Delete</button>
                     </div>
                 </div>
             `).join('');
+            
+            const totalPages = Math.ceil(totalRecords / PAGE_SIZE);
+            if (totalPages > 1) {
+                html += `
+                    <div class="pagination">
+                        <button class="page-btn" onclick="loadTable(${page - 1})" ${page === 1 ? 'disabled' : ''}>← Prev</button>
+                        <span class="page-info">Page ${page} of ${totalPages}</span>
+                        <button class="page-btn" onclick="loadTable(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Next →</button>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
         }
 
         async function deleteTarget(id) {
             await deleteFromIDB(id);
-            updateStats();
-            loadTable();
-            toast('Target deleted from database', 'success');
+            await updateStats();
+            loadTable(currentPage);
+            toast('Target deleted', 'success');
         }
 
-        // Purge All
+        async function showDuplicates() {
+            // Find duplicates logic
+            const tx = idb.transaction([STORE_NAME], 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const index = store.index('discord_id');
+            const request = index.openCursor();
+            const seen = new Set();
+            const duplicates = [];
+            
+            request.onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (cursor) {
+                    const id = cursor.value.discord_id;
+                    if (seen.has(id)) {
+                        duplicates.push(cursor.value);
+                    } else {
+                        seen.add(id);
+                    }
+                    cursor.continue();
+                } else {
+                    // Show modal with duplicates
+                    document.getElementById('modalTitle').textContent = '📋 Duplicate Report';
+                    document.getElementById('modalSubtitle').textContent = `${duplicates.length} duplicate entries found`;
+                    
+                    let html = '<div class="duplicate-list">';
+                    if (duplicates.length === 0) {
+                        html += '<div style="text-align: center; color: var(--text-muted); padding: 20px;">No duplicates found! Database is clean.</div>';
+                    } else {
+                        duplicates.forEach(d => {
+                            html += `
+                                <div class="duplicate-item">
+                                    <span>${d.discord_id}</span>
+                                    <span style="color: var(--accent);">Duplicate</span>
+                                </div>
+                            `;
+                        });
+                    }
+                    html += '</div>';
+                    
+                    document.getElementById('modalBody').innerHTML = html;
+                    document.getElementById('modalConfirm').classList.add('hidden');
+                    document.getElementById('modal').classList.add('active');
+                }
+            };
+        }
+
         function showPurge() {
-            document.getElementById('modalText').textContent = 'This will permanently delete ALL targets from the database. This action cannot be undone.';
+            document.getElementById('modalTitle').textContent = '⚠️ Purge Database';
+            document.getElementById('modalSubtitle').textContent = 'This will delete all data permanently';
+            document.getElementById('modalBody').innerHTML = '<p style="color: var(--text-secondary);">Are you sure you want to delete all targets? This cannot be undone.</p>';
+            document.getElementById('modalConfirm').classList.remove('hidden');
             document.getElementById('modalConfirm').onclick = purgeAll;
             document.getElementById('modal').classList.add('active');
         }
@@ -1667,66 +1963,59 @@
         async function purgeAll() {
             closeModal();
             await clearIDB();
-            updateStats();
-            loadTable();
-            toast('Database purged successfully', 'warning');
+            await updateStats();
+            loadTable(1);
+            toast('Database purged', 'warning');
         }
 
-        // Export
         async function exportData() {
-            const all = await getAllFromIDB();
-            const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `estedev_export_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            toast('Data exported successfully', 'success');
+            const tx = idb.transaction([STORE_NAME], 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.openCursor();
+            const data = [];
+            
+            request.onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (cursor) {
+                    data.push(cursor.value);
+                    cursor.continue();
+                } else {
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `estedev_export_${new Date().toISOString().slice(0,10)}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast('Export complete', 'success');
+                }
+            };
         }
 
-        // Modal
         function closeModal() {
             document.getElementById('modal').classList.remove('active');
         }
 
-        // Toast Notification
         function toast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
             const icon = type === 'success' ? '✓' : type === 'warning' ? '⚠' : type === 'error' ? '✕' : 'ℹ';
             toast.innerHTML = `<span style="margin-right: 8px;">${icon}</span> ${message}`;
-            
             container.appendChild(toast);
-            
             requestAnimationFrame(() => toast.classList.add('show'));
-            
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 400);
             }, 3000);
         }
 
-        // Event Listeners
-        document.getElementById('searchId').addEventListener('keypress', e => {
+        document.getElementById('searchInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') search();
         });
         document.getElementById('adminPass').addEventListener('keypress', e => {
             if (e.key === 'Enter') login();
         });
-
-        // Add shake animation for access denied
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-10px); }
-                75% { transform: translateX(10px); }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>

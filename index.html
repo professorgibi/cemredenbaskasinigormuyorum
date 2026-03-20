@@ -3,384 +3,1033 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine Archive | Kutsal Veritabanı</title>
+    <title>ESTEDEV | Intelligence Platform</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         :root {
-            --gold: #d4af37;
-            --dark: #0a0a0f;
-            --panel: rgba(20, 20, 30, 0.9);
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #242424;
+            --bg-hover: #2a2a2a;
+            --accent: #dc2626;
+            --accent-hover: #b91c1c;
+            --accent-light: #fca5a5;
+            --text-primary: #fafafa;
+            --text-secondary: #a3a3a3;
+            --text-muted: #737373;
+            --border: #333333;
+            --border-light: #404040;
+            --success: #22c55e;
+            --warning: #f59e0b;
         }
+
+        * { scrollbar-width: thin; scrollbar-color: var(--border) var(--bg-secondary); }
+        *::-webkit-scrollbar { width: 8px; height: 8px; }
+        *::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        *::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        *::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #050508;
-            color: #e8e8e8;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
+            line-height: 1.6;
         }
 
-        .cosmic-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(ellipse at 20% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 80%, rgba(74, 20, 140, 0.2) 0%, transparent 50%);
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        h1 {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #f4d03f, #d4af37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 0.3em;
-        }
-
-        .nav {
+        /* Top Navigation */
+        .top-nav {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
+            font-weight: 700;
+            color: white;
         }
 
-        .nav-btn {
-            padding: 12px 30px;
-            background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--gold);
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
         }
 
-        .nav-btn.active {
-            background: rgba(212, 175, 55, 0.2);
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
         }
 
+        .nav-link.active {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        /* Section */
         .section {
             display: none;
-            animation: fadeIn 0.5s;
         }
 
         .section.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .search-box {
+        /* Search Section */
+        .search-hero {
+            max-width: 700px;
+            margin: 80px auto;
             text-align: center;
-            padding: 40px;
+        }
+
+        .search-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .search-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 1.125rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 24px;
         }
 
         .search-input {
             width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            background: var(--panel);
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 1.1rem;
-            text-align: center;
-            margin-bottom: 20px;
+            padding: 20px 24px;
+            padding-right: 140px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            font-family: 'JetBrains Mono', monospace;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
         }
 
         .search-btn {
-            padding: 15px 40px;
-            background: var(--gold);
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 12px 24px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Result Card */
+        .result-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 32px;
+            display: none;
+        }
+
+        .result-card.active {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            background: var(--bg-tertiary);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--accent-light);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-body {
+            padding: 32px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .result-item {
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 1.125rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            word-break: break-all;
+        }
+
+        .result-value.highlight {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        .not-found {
+            margin-top: 32px;
+            padding: 24px;
+            background: rgba(220, 38, 38, 0.05);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-radius: 12px;
+            color: var(--accent-light);
+            text-align: center;
+            display: none;
+            font-weight: 500;
+        }
+
+        /* Admin Section */
+        .login-container {
+            max-width: 420px;
+            margin: 100px auto;
+        }
+
+        .login-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
             border: none;
             border-radius: 10px;
-            color: #000;
-            font-weight: bold;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9375rem;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .result-card {
-            background: var(--panel);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 30px;
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-danger:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8125rem;
+        }
+
+        .access-denied {
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-radius: 8px;
+            color: var(--accent-light);
+            text-align: center;
+            font-size: 0.875rem;
             display: none;
         }
 
-        .result-card.show {
-            display: block;
-        }
-
-        .admin-login {
-            max-width: 400px;
-            margin: 0 auto;
-            background: var(--panel);
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .admin-panel {
+        /* Dashboard */
+        .dashboard {
             display: none;
         }
 
-        .admin-panel.show {
+        .dashboard.active {
             display: block;
         }
 
-        .upload-area {
-            background: var(--panel);
-            border: 2px dashed var(--gold);
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 20px;
-            cursor: pointer;
+        .page-header {
+            margin-bottom: 32px;
         }
 
-        .upload-area:hover {
-            background: rgba(212, 175, 55, 0.1);
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        /* Upload Area */
+        .upload-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-style: dashed;
+        }
+
+        .upload-section:hover {
+            border-color: var(--accent);
+            background: rgba(220, 38, 38, 0.02);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.5rem;
+        }
+
+        .upload-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .progress-container {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            margin-top: 8px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .form-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
         }
 
-        .form-grid input, .form-grid textarea {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            color: #fff;
+        .form-col-full {
+            grid-column: 1 / -1;
         }
 
-        .btn-primary {
-            width: 100%;
-            padding: 15px;
-            background: var(--gold);
-            border: none;
-            border-radius: 8px;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
+        /* Data Table */
+        .table-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
         }
 
-        .btn-danger {
-            background: #e74c3c;
-            color: #fff;
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 200px;
+            padding: 16px 24px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
         }
 
-        .souls-list {
-            background: var(--panel);
-            border-radius: 15px;
-            padding: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .soul-item {
-            display: flex;
-            justify-content: space-between;
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 200px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
             align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: background 0.15s;
         }
 
-        .soul-item:hover {
-            background: rgba(212, 175, 55, 0.05);
+        .table-row:hover {
+            background: var(--bg-hover);
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .col-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--accent-light);
+        }
+
+        .col-name {
+            font-weight: 500;
+        }
+
+        .col-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .col-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            color: #fff;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
             transform: translateX(400px);
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
+            max-width: 360px;
         }
 
         .toast.show {
             transform: translateX(0);
         }
 
-        .toast.success { background: #27ae60; }
-        .toast.error { background: #e74c3c; }
+        .toast.success { border-left-color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
 
-        .progress {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--gold);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background: var(--panel);
-            padding: 15px;
-            border-radius: 10px;
+        /* Empty State */
+        .empty-state {
+            padding: 60px;
             text-align: center;
+            color: var(--text-muted);
         }
 
-        .stat-number {
-            font-size: 1.5rem;
-            color: var(--gold);
-        }
-
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: rgba(255,255,255,0.3);
-        }
-
-        footer span {
-            color: var(--gold);
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
         }
 
         .hidden { display: none !important; }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-grid { grid-template-columns: repeat(2, 1fr); }
+            .table-header, .table-row { grid-template-columns: 1fr 1fr; }
+            .table-header > div:nth-child(3), .table-row > div:nth-child(3),
+            .table-header > div:nth-child(4), .table-row > div:nth-child(4) { display: none; }
+        }
+
+        @media (max-width: 640px) {
+            .main-container { padding: 16px; }
+            .top-nav { padding: 0 16px; }
+            .nav-links { display: none; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .result-grid { grid-template-columns: 1fr; }
+            .action-bar { flex-direction: column; }
+        }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <div class="cosmic-bg"></div>
-    
-    <div class="container">
-        <header>
-            <h1>DIVINE ARCHIVE</h1>
-            <p style="color: rgba(255,255,255,0.5); margin-top: 10px;">Kutsal Veritabanı</p>
-        </header>
-
-        <div class="nav">
-            <button class="nav-btn active" onclick="showSection('search')">Ara</button>
-            <button class="nav-btn" onclick="showSection('admin')">Admin</button>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="brand">
+            <div class="brand-icon">E</div>
+            <span>ESTEDEV</span>
         </div>
+        <div class="nav-links">
+            <button class="nav-link active" onclick="changeSection('search')">Target Search</button>
+            <button class="nav-link" onclick="changeSection('admin')">Command Center</button>
+        </div>
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            <span>System Online</span>
+            <span style="margin-left: 16px; color: var(--text-muted);">DB: <span id="dbSize">0</span> targets</span>
+        </div>
+    </nav>
 
-        <!-- Search -->
-        <section id="search-section" class="section active">
-            <div class="search-box">
-                <input type="text" class="search-input" id="searchId" placeholder="Discord ID girin">
-                <br>
-                <button class="search-btn" onclick="search()">Ara</button>
-                
-                <div id="result" class="result-card">
-                    <h3 id="resName" style="color: var(--gold); margin-bottom: 5px;"></h3>
-                    <p id="resUser" style="color: rgba(255,255,255,0.5); margin-bottom: 20px;"></p>
-                    <p><strong>ID:</strong> <span id="resId"></span></p>
-                    <p><strong>Email:</strong> <span id="resEmail"></span></p>
-                    <p><strong>Telefon:</strong> <span id="resPhone"></span></p>
-                    <p><strong>Notlar:</strong> <span id="resNotes"></span></p>
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Search Section -->
+        <section id="section-search" class="section active">
+            <div class="search-hero">
+                <h1 class="search-title">Target Acquisition</h1>
+                <p class="search-subtitle">Search the intelligence database by Discord ID</p>
+
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchId" placeholder="Enter Discord ID...">
+                    <button class="search-btn" onclick="search()">Search</button>
                 </div>
 
-                <div id="notFound" class="result-card" style="border: 1px solid #e74c3c;">
-                    <p style="color: #e74c3c;">❌ Kayıt bulunamadı</p>
+                <div id="resultCard" class="result-card">
+                    <div class="result-header">
+                        <span class="result-badge">● Target Located</span>
+                        <span style="color: var(--text-muted); font-size: 0.875rem;">ID: <span id="resIdShort">...</span></span>
+                    </div>
+                    <div class="result-body">
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">Codename</div>
+                                <div class="result-value highlight" id="resName">Unknown</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Alias</div>
+                                <div class="result-value" id="resUser">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Discord ID</div>
+                                <div class="result-value" id="resId">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Email</div>
+                                <div class="result-value" id="resEmail">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Phone</div>
+                                <div class="result-value" id="resPhone">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Notes</div>
+                                <div class="result-value" id="resNotes">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="notFound" class="not-found">
+                    Target not found in database. Please verify the ID and try again.
                 </div>
             </div>
         </section>
 
-        <!-- Admin -->
-        <section id="admin-section" class="section">
-            <div id="loginPanel" class="admin-login">
-                <h3 style="color: var(--gold); margin-bottom: 20px;">Admin Girişi</h3>
-                <input type="password" id="adminPass" placeholder="Şifre" style="width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--gold); border-radius: 8px; color: #fff;">
-                <button class="btn-primary" onclick="login()">Giriş</button>
+        <!-- Admin Section -->
+        <section id="section-admin" class="section">
+            <!-- Login -->
+            <div id="loginPanel" class="login-container">
+                <div class="login-card">
+                    <h2 class="login-title">Authentication Required</h2>
+                    <p class="login-subtitle">Enter your clearance code to access the command center</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Clearance Code</label>
+                        <input type="password" class="form-input" id="adminPass" placeholder="••••••••">
+                    </div>
+                    <button class="btn" onclick="login()">Authenticate</button>
+
+                    <div id="accessDenied" class="access-denied">
+                        Access denied. Invalid credentials.
+                    </div>
+                </div>
             </div>
 
-            <div id="adminPanel" class="admin-panel">
-                <div class="stats">
-                    <div class="stat-box">
-                        <div class="stat-number" id="statTotal">0</div>
-                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Toplam</div>
+            <!-- Dashboard -->
+            <div id="dashboard" class="dashboard">
+                <div class="page-header">
+                    <h1 class="page-title">Command Center</h1>
+                    <p class="page-subtitle">Manage targets and system operations</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-title">Total Targets</div>
+                        </div>
+                        <div class="stat-value" id="statTotal">0</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-number" id="statLoaded">0</div>
-                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Yüklenen</div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">📥</div>
+                            <div class="stat-title">Loaded</div>
+                        </div>
+                        <div class="stat-value" id="statLoaded">0</div>
                     </div>
-                    <div class="stat-box">
-                        <div class="stat-number" id="statSkipped">0</div>
-                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Atlanan</div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-title">Duplicates</div>
+                        </div>
+                        <div class="stat-value" id="statSkipped">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon">💾</div>
+                            <div class="stat-title">Memory Usage</div>
+                        </div>
+                        <div class="stat-value"><span id="statMemory">0</span> <span style="font-size: 1rem; color: var(--text-muted);">MB</span></div>
                     </div>
                 </div>
 
-                <div class="upload-area" id="dropZone">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📁</div>
-                    <div style="color: var(--gold); font-weight: bold;">Dosya Yükle</div>
-                    <div style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-top: 5px;">
-                        JSON, SQL, CSV, TXT - Sürükle veya tıkla
-                    </div>
-                    <div class="progress" id="progress">
-                        <div class="progress-bar" id="progressBar"></div>
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <button class="btn btn-secondary btn-sm" onclick="exportData()">Export Data</button>
+                    <button class="btn btn-secondary btn-sm" onclick="optimizeStorage()">Optimize System</button>
+                    <button class="btn btn-danger btn-sm" onclick="showPurge()">Purge All Data</button>
+                </div>
+
+                <!-- Upload -->
+                <div class="upload-section" id="dropZone">
+                    <div class="upload-icon">↑</div>
+                    <div class="upload-title">Upload Intelligence Data</div>
+                    <div class="upload-hint">Drag and drop files here or click to browse. Supports JSON, SQL, CSV, TXT</div>
+                    <div class="progress-container" id="progressBox">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressBar"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">Processing...</div>
                     </div>
                     <input type="file" id="fileInput" style="display: none;" accept=".json,.sql,.csv,.txt">
                 </div>
 
-                <div style="background: var(--panel); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-                    <h4 style="color: var(--gold); margin-bottom: 15px;">Yeni Ekle</h4>
+                <!-- Add Form -->
+                <div class="form-section">
+                    <div class="form-header">Manual Target Registration</div>
                     <div class="form-grid">
-                        <input type="text" id="newId" placeholder="Discord ID *">
-                        <input type="text" id="newName" placeholder="İsim">
-                        <input type="text" id="newUser" placeholder="Kullanıcı Adı">
-                        <input type="email" id="newEmail" placeholder="Email">
-                        <input type="text" id="newPhone" placeholder="Telefon">
-                        <input type="text" id="newAvatar" placeholder="Avatar URL">
+                        <div class="form-group">
+                            <label class="form-label">Discord ID *</label>
+                            <input type="text" class="form-input" id="newId" placeholder="000000000000000000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Codename</label>
+                            <input type="text" class="form-input" id="newName" placeholder="Unknown">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Alias</label>
+                            <input type="text" class="form-input" id="newUser" placeholder="username">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="newEmail" placeholder="user@domain.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-input" id="newPhone" placeholder="+0000000000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Avatar URL</label>
+                            <input type="text" class="form-input" id="newAvatar" placeholder="https://...">
+                        </div>
+                        <div class="form-group form-col-full">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-input" id="newNotes" rows="3" placeholder="Additional intelligence..."></textarea>
+                        </div>
                     </div>
-                    <textarea id="newNotes" placeholder="Notlar" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px; color: #fff; margin-bottom: 15px;"></textarea>
-                    <button class="btn-primary" onclick="addManual()">Ekle</button>
+                    <button class="btn" onclick="addRecord()" style="margin-top: 24px;">Register Target</button>
                 </div>
 
-                <div class="souls-list" id="soulsList">
-                    <h4 style="color: var(--gold); margin-bottom: 15px;">Kayıtlar</h4>
+                <!-- Data Table -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <div>Discord ID</div>
+                        <div>Codename</div>
+                        <div>Status</div>
+                        <div>Actions</div>
+                    </div>
+                    <div id="tableContent">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <div>No targets in database</div>
+                        </div>
+                    </div>
                 </div>
-
-                <button class="btn-primary btn-danger" onclick="logout()" style="margin-top: 20px;">Çıkış</button>
             </div>
         </section>
+    </main>
 
-        <footer>
-            <span>estedev</span> tarafından geliştirildi
-        </footer>
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm Action</div>
+                <div class="modal-subtitle">This action cannot be undone</div>
+            </div>
+            <div class="modal-body">
+                <p id="modalText" style="color: var(--text-secondary);">Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger btn-sm" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script>
         // Config
         const SUPABASE_URL = 'https://shpflhdeswhotrctzmqj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocGZsaGRlc3dob3RyY3R6bXFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjExNzIsImV4cCI6MjA4OTU5NzE3Mn0.YFWgiqX7K6iMQ7HFdjDmHD5E1ouhFhRArqni0LBnMmA';
-        
+
         let db = null;
         let useSQL = false;
-        
-        // Init
+
         if (!SUPABASE_URL.includes('YOUR_')) {
             try {
                 db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -388,89 +1037,143 @@
             } catch(e) {}
         }
 
-        // Storage
-        const STORAGE_KEY = 'divine_archive_v1';
-        const getData = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        const setData = (d) => localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+        // IndexedDB
+        const DB_NAME = 'EstedevDB';
+        const STORE_NAME = 'targets';
+        let idb = null;
 
-        // Stats
-        let loadedCount = 0;
-        let skippedCount = 0;
+        async function initIDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    idb = request.result;
+                    resolve();
+                };
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                        store.createIndex('discord_id', 'discord_id', { unique: true });
+                    }
+                };
+            });
+        }
 
-        function showSection(id) {
+        async function addToIDB(target) {
+            return new Promise((resolve) => {
+                const tx = idb.transaction([STORE_NAME], 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.add(target);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null);
+            });
+        }
+
+        async function getAllFromIDB() {
+            return new Promise((resolve) => {
+                const tx = idb.transaction([STORE_NAME], 'readonly');
+                const store = tx.objectStore(STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve([]);
+            });
+        }
+
+        async function deleteFromIDB(id) {
+            return new Promise((resolve) => {
+                const tx = idb.transaction([STORE_NAME], 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                store.delete(id);
+                tx.oncomplete = () => resolve();
+            });
+        }
+
+        async function clearIDB() {
+            return new Promise((resolve) => {
+                const tx = idb.transaction([STORE_NAME], 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                store.clear();
+                tx.oncomplete = () => resolve();
+            });
+        }
+
+        // Navigation
+        function changeSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(id + '-section').classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+            document.getElementById('section-' + id).classList.add('active');
             event.target.classList.add('active');
         }
 
         // Search
         async function search() {
             const id = document.getElementById('searchId').value.trim();
-            if (!id) return showToast('ID girin', 'error');
+            if (!id) return toast('Please enter a Discord ID', 'error');
 
-            document.getElementById('result').classList.remove('show');
-            document.getElementById('notFound').classList.remove('show');
+            document.getElementById('resultCard').classList.remove('active');
+            document.getElementById('notFound').style.display = 'none';
 
-            let found = null;
+            let target = null;
 
-            // SQL
-            if (useSQL && db) {
+            if (idb) {
+                const all = await getAllFromIDB();
+                target = all.find(t => t.discord_id === id);
+            }
+
+            if (!target && useSQL && db) {
                 try {
-                    const { data } = await db.from('souls').select('*').eq('discord_id', id).single();
-                    if (data) found = data;
+                    const { data } = await db.from('targets').select('*').eq('discord_id', id).single();
+                    if (data) target = data;
                 } catch(e) {}
             }
 
-            // Local
-            if (!found) {
-                found = getData().find(x => x.discord_id === id);
-            }
-
-            if (found) {
-                document.getElementById('resName').textContent = found.name || 'İsimsiz';
-                document.getElementById('resUser').textContent = found.username ? '@' + found.username : '';
-                document.getElementById('resId').textContent = found.discord_id;
-                document.getElementById('resEmail').textContent = found.email || '-';
-                document.getElementById('resPhone').textContent = found.phone || '-';
-                document.getElementById('resNotes').textContent = found.notes || '-';
-                document.getElementById('result').classList.add('show');
+            if (target) {
+                document.getElementById('resName').textContent = target.name || 'Unknown';
+                document.getElementById('resUser').textContent = target.username ? '@' + target.username : '-';
+                document.getElementById('resId').textContent = target.discord_id;
+                document.getElementById('resIdShort').textContent = target.discord_id.substring(0, 8) + '...';
+                document.getElementById('resEmail').textContent = target.email || '-';
+                document.getElementById('resPhone').textContent = target.phone || '-';
+                document.getElementById('resNotes').textContent = target.notes || '-';
+                document.getElementById('resultCard').classList.add('active');
             } else {
-                document.getElementById('notFound').classList.add('show');
+                document.getElementById('notFound').style.display = 'block';
             }
         }
 
         // Admin
-        function login() {
+        async function login() {
             if (document.getElementById('adminPass').value === 'cemreyiseviyorum') {
                 document.getElementById('loginPanel').classList.add('hidden');
-                document.getElementById('adminPanel').classList.add('show');
-                updateList();
+                document.getElementById('dashboard').classList.add('active');
+                await initIDB();
                 updateStats();
+                loadTable();
             } else {
-                showToast('Yanlış şifre', 'error');
+                document.getElementById('accessDenied').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('accessDenied').style.display = 'none';
+                }, 3000);
             }
         }
 
-        function logout() {
-            document.getElementById('adminPanel').classList.remove('show');
-            document.getElementById('loginPanel').classList.remove('hidden');
-            document.getElementById('adminPass').value = '';
+        // Stats
+        async function updateStats() {
+            const all = await getAllFromIDB();
+            document.getElementById('statTotal').textContent = all.length.toLocaleString();
+            document.getElementById('dbSize').textContent = all.length.toLocaleString();
+
+            const memory = JSON.stringify(all).length / 1024 / 1024;
+            document.getElementById('statMemory').textContent = memory.toFixed(1);
         }
 
-        function updateStats() {
-            const data = getData();
-            document.getElementById('statTotal').textContent = data.length;
-            document.getElementById('statLoaded').textContent = loadedCount;
-            document.getElementById('statSkipped').textContent = skippedCount;
-        }
-
-        // File Upload - ULTRA FLEXIBLE
+        // File Upload
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
 
         dropZone.addEventListener('click', () => fileInput.click());
-        
+
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
             dropZone.addEventListener(e, (ev) => {
                 ev.preventDefault();
@@ -479,219 +1182,125 @@
         });
 
         dropZone.addEventListener('drop', (e) => {
-            if (e.dataTransfer.files.length) {
-                processFile(e.dataTransfer.files[0]);
-            }
+            if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
         });
 
         fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length) {
-                processFile(e.target.files[0]);
-            }
+            if (e.target.files[0]) processFile(e.target.files[0]);
         });
 
         async function processFile(file) {
-            loadedCount = 0;
-            skippedCount = 0;
-            
-            document.getElementById('progress').style.display = 'block';
-            updateProgress(10);
+            document.getElementById('progressBox').style.display = 'block';
 
-            try {
-                const text = await file.text();
-                updateProgress(30);
+            const stream = file.stream();
+            const reader = stream.getReader();
+            const decoder = new TextDecoder();
 
-                // AUTO DETECT FORMAT
-                let souls = [];
+            let buffer = '';
+            let processed = 0;
+            let loaded = 0;
+            let skipped = 0;
 
-                // 1. Try JSON
-                if (file.name.endsWith('.json') || text.trim().startsWith('[') || text.trim().startsWith('{')) {
-                    try {
-                        const json = JSON.parse(text);
-                        souls = Array.isArray(json) ? json : [json];
-                    } catch(e) {
-                        // JSON parse failed, try other methods
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                const targets = [];
+                for (const line of lines) {
+                    const target = parseLine(line);
+                    if (target && target.discord_id) {
+                        targets.push(target);
                     }
                 }
 
-                // 2. Try SQL (if JSON failed or SQL file)
-                if (souls.length === 0 && (file.name.endsWith('.sql') || text.includes('INSERT INTO'))) {
-                    souls = parseSQL(text);
+                for (const target of targets) {
+                    const id = await addToIDB(target);
+                    if (id) loaded++; else skipped++;
+                    processed++;
                 }
 
-                // 3. Try CSV (if others failed)
-                if (souls.length === 0 && (file.name.endsWith('.csv') || text.includes(','))) {
-                    souls = parseCSV(text);
+                const percent = Math.min((processed / 10000000) * 100, 100);
+                document.getElementById('progressBar').style.width = percent + '%';
+                document.getElementById('progressText').textContent = `Processing... ${Math.floor(percent)}% (${loaded.toLocaleString()} loaded)`;
+
+                if (processed % 100000 === 0) {
+                    document.getElementById('statLoaded').textContent = loaded.toLocaleString();
+                    document.getElementById('statSkipped').textContent = skipped.toLocaleString();
+                    await new Promise(r => setTimeout(r, 0));
                 }
-
-                // 4. Try generic text parse (last resort)
-                if (souls.length === 0) {
-                    souls = parseGeneric(text);
-                }
-
-                updateProgress(50);
-
-                // Import
-                const total = souls.length;
-                for (let i = 0; i < souls.length; i++) {
-                    if (await importSoul(souls[i])) {
-                        loadedCount++;
-                    } else {
-                        skippedCount++;
-                    }
-                    
-                    if (i % 100 === 0) {
-                        updateProgress(50 + ((i / total) * 50));
-                        await new Promise(r => setTimeout(r, 1));
-                    }
-                }
-
-                updateProgress(100);
-                setTimeout(() => {
-                    document.getElementById('progress').style.display = 'none';
-                    updateProgress(0);
-                }, 500);
-
-                updateList();
-                updateStats();
-                showToast(`${loadedCount} kayıt yüklendi, ${skippedCount} atlandı`, 'success');
-
-            } catch(e) {
-                document.getElementById('progress').style.display = 'none';
-                showToast('Hata: ' + e.message, 'error');
-                console.error(e);
             }
+
+            if (buffer.trim()) {
+                const target = parseLine(buffer);
+                if (target) {
+                    await addToIDB(target);
+                    loaded++;
+                }
+            }
+
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressText').textContent = `Complete: ${loaded.toLocaleString()} targets loaded`;
+
+            setTimeout(() => {
+                document.getElementById('progressBox').style.display = 'none';
+                document.getElementById('progressBar').style.width = '0%';
+            }, 2000);
+
+            toast(`Successfully loaded ${loaded.toLocaleString()} targets`, 'success');
+            updateStats();
+            loadTable();
         }
 
-        function updateProgress(percent) {
-            document.getElementById('progressBar').style.width = percent + '%';
-        }
+        function parseLine(line) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('--')) return null;
 
-        // SQL Parser - ROBUST
-        function parseSQL(text) {
-            const souls = [];
-            
-            // Find all value rows between parentheses
-            const regex = /\(([^)]+)\)/g;
-            let match;
-            
-            while ((match = regex.exec(text)) !== null) {
-                const values = match[1].split(',').map(v => {
+            const match = trimmed.match(/VALUES\s*\((.+)\)/i);
+            if (match) {
+                const vals = match[1].split(',').map(v => {
                     v = v.trim();
-                    // Remove quotes
-                    if ((v.startsWith("'") && v.endsWith("'")) || 
-                        (v.startsWith('"') && v.endsWith('"'))) {
+                    if ((v.startsWith("'") && v.endsWith("'")) || (v.startsWith('"') && v.endsWith('"'))) {
                         v = v.slice(1, -1);
                     }
                     return v === 'NULL' ? '' : v;
                 });
-                
-                // Try to detect which column is discord_id (usually first numeric or first string)
-                const soul = {
-                    discord_id: values[0] || '',
-                    name: values[1] || '',
-                    username: values[2] || values[1] || '',
-                    email: values[3] || '',
-                    phone: values[4] || '',
-                    avatar_url: values[5] || '',
-                    notes: values.slice(6).join(', ') || ''
+
+                return {
+                    discord_id: vals[0] || '',
+                    name: vals[1] || '',
+                    username: vals[2] || '',
+                    email: vals[3] || '',
+                    phone: vals[4] || '',
+                    avatar_url: vals[5] || '',
+                    notes: vals.slice(6).join(', ')
                 };
-                
-                // Only add if looks like valid discord_id (numeric and reasonable length)
-                if (soul.discord_id && /^\d{10,20}$/.test(soul.discord_id)) {
-                    souls.push(soul);
+            }
+
+            if (trimmed.includes(',')) {
+                const parts = trimmed.split(',');
+                if (/^\d{10,20}$/.test(parts[0])) {
+                    return {
+                        discord_id: parts[0],
+                        name: parts[1] || '',
+                        username: parts[2] || '',
+                        email: parts[3] || '',
+                        phone: parts[4] || '',
+                        avatar_url: parts[5] || '',
+                        notes: parts.slice(6).join(',')
+                    };
                 }
             }
-            
-            return souls;
+
+            return null;
         }
 
-        // CSV Parser
-        function parseCSV(text) {
-            const souls = [];
-            const lines = text.split('\n');
-            
-            for (const line of lines) {
-                const values = line.split(',').map(v => v.trim());
-                if (values.length >= 1 && /^\d{10,20}$/.test(values[0])) {
-                    souls.push({
-                        discord_id: values[0],
-                        name: values[1] || '',
-                        username: values[2] || '',
-                        email: values[3] || '',
-                        phone: values[4] || '',
-                        avatar_url: values[5] || '',
-                        notes: values.slice(6).join(', ')
-                    });
-                }
-            }
-            
-            return souls;
-        }
-
-        // Generic Parser (last resort)
-        function parseGeneric(text) {
-            const souls = [];
-            const lines = text.split('\n');
-            
-            for (const line of lines) {
-                // Look for lines starting with numbers (discord IDs)
-                const match = line.match(/^(\d{10,20})[,\s\t]+(.+)?$/);
-                if (match) {
-                    const parts = (match[2] || '').split(/[,\t]/);
-                    souls.push({
-                        discord_id: match[1],
-                        name: parts[0] || '',
-                        username: parts[1] || '',
-                        email: parts[2] || '',
-                        phone: parts[3] || '',
-                        avatar_url: parts[4] || '',
-                        notes: parts.slice(5).join(' ')
-                    });
-                }
-            }
-            
-            return souls;
-        }
-
-        async function importSoul(soul) {
-            if (!soul || !soul.discord_id) return false;
-            
-            // Validate discord_id
-            if (!/^\d{10,20}$/.test(String(soul.discord_id))) return false;
-
-            const cleanSoul = {
-                discord_id: String(soul.discord_id).trim(),
-                name: String(soul.name || '').trim(),
-                username: String(soul.username || '').trim(),
-                email: String(soul.email || '').trim(),
-                phone: String(soul.phone || '').trim(),
-                avatar_url: String(soul.avatar_url || soul.avatar || '').trim(),
-                notes: String(soul.notes || '').trim()
-            };
-
-            // SQL
-            if (useSQL && db) {
-                try {
-                    await db.from('souls').insert([cleanSoul]);
-                } catch(e) {}
-            }
-
-            // Local
-            const data = getData();
-            if (!data.find(x => x.discord_id === cleanSoul.discord_id)) {
-                cleanSoul.id = Date.now().toString() + Math.random().toString(36).substr(2, 5);
-                cleanSoul.created_at = new Date().toISOString();
-                data.push(cleanSoul);
-                setData(data);
-                return true;
-            }
-            
-            return false;
-        }
-
-        function addManual() {
-            const soul = {
+        // Add Record
+        async function addRecord() {
+            const target = {
                 discord_id: document.getElementById('newId').value.trim(),
                 name: document.getElementById('newName').value.trim(),
                 username: document.getElementById('newUser').value.trim(),
@@ -701,79 +1310,140 @@
                 notes: document.getElementById('newNotes').value.trim()
             };
 
-            if (!soul.discord_id) return showToast('Discord ID gerekli', 'error');
+            if (!target.discord_id) return toast('Discord ID is required', 'error');
 
-            importSoul(soul).then(success => {
-                if (success) {
-                    showToast('Eklendi', 'success');
-                    updateList();
-                    updateStats();
-                    // Clear form
-                    ['newId','newName','newUser','newEmail','newPhone','newAvatar','newNotes'].forEach(id => {
-                        document.getElementById(id).value = '';
-                    });
-                } else {
-                    showToast('Bu ID zaten var veya geçersiz', 'error');
-                }
-            });
+            const id = await addToIDB(target);
+            if (id) {
+                toast('Target registered successfully', 'success');
+                updateStats();
+                loadTable();
+                ['newId','newName','newUser','newEmail','newPhone','newAvatar','newNotes'].forEach(f => {
+                    document.getElementById(f).value = '';
+                });
+            } else {
+                toast('Target already exists in database', 'error');
+            }
         }
 
-        function updateList() {
-            const data = getData();
-            const container = document.getElementById('soulsList');
-            
-            // Show last 100 only
-            const recent = data.slice(-100).reverse();
-            
-            container.innerHTML = '<h4 style="color: var(--gold); margin-bottom: 15px;">Kayıtlar (' + data.length + ')</h4>';
-            
+        // Load Table
+        async function loadTable() {
+            const all = await getAllFromIDB();
+            const recent = all.slice(-50).reverse();
+
+            const container = document.getElementById('tableContent');
+
             if (recent.length === 0) {
-                container.innerHTML += '<p style="color: rgba(255,255,255,0.5);">Henüz kayıt yok</p>';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div>No targets in database</div>
+                    </div>
+                `;
                 return;
             }
 
-            recent.forEach(soul => {
-                const div = document.createElement('div');
-                div.className = 'soul-item';
-                div.innerHTML = `
-                    <div>
-                        <div style="color: var(--gold); font-weight: bold;">${soul.name || 'İsimsiz'}</div>
-                        <div style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">${soul.discord_id}</div>
+            container.innerHTML = recent.map(target => `
+                <div class="table-row">
+                    <div class="col-id">${target.discord_id}</div>
+                    <div class="col-name">${target.name || 'Unknown'}</div>
+                    <div><span class="col-status">● Active</span></div>
+                    <div class="col-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editTarget(${target.id})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTarget(${target.id})">Delete</button>
                     </div>
-                    <button onclick="deleteSoul('${soul.id}')" style="background: #e74c3c; border: none; color: #fff; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Sil</button>
-                `;
-                container.appendChild(div);
-            });
-
-            if (data.length > 100) {
-                container.innerHTML += `<p style="color: rgba(255,255,255,0.3); text-align: center; margin-top: 10px;">... ve ${data.length - 100} kayıt daha</p>`;
-            }
+                </div>
+            `).join('');
         }
 
-        function deleteSoul(id) {
-            if (!confirm('Silmek istediğinize emin misiniz?')) return;
-            
+        async function editTarget(id) {
+            const all = await getAllFromIDB();
+            const target = all.find(t => t.id === id);
+            if (!target) return;
+
+            document.getElementById('newId').value = target.discord_id;
+            document.getElementById('newName').value = target.name || '';
+            document.getElementById('newUser').value = target.username || '';
+            document.getElementById('newEmail').value = target.email || '';
+            document.getElementById('newPhone').value = target.phone || '';
+            document.getElementById('newAvatar').value = target.avatar_url || '';
+            document.getElementById('newNotes').value = target.notes || '';
+
+            await deleteFromIDB(id);
+            toast('Target loaded for editing', 'success');
+            loadTable();
+            updateStats();
+        }
+
+        async function deleteTarget(id) {
+            await deleteFromIDB(id);
+            updateStats();
+            loadTable();
+            toast('Target deleted', 'success');
+        }
+
+        // Purge
+        function showPurge() {
+            document.getElementById('modalText').textContent = 'Are you sure you want to delete all targets? This action is permanent and cannot be undone.';
+            document.getElementById('modalConfirm').onclick = purgeAll;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        async function purgeAll() {
+            closeModal();
+            await clearIDB();
             if (useSQL && db) {
                 try {
-                    db.from('souls').delete().eq('id', id);
+                    await db.from('targets').delete().neq('id', 0);
                 } catch(e) {}
             }
-            
-            setData(getData().filter(x => x.id !== id));
-            updateList();
             updateStats();
-            showToast('Silindi', 'success');
+            loadTable();
+            toast('All data purged successfully', 'warning');
         }
 
-        function showToast(msg, type) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.className = 'toast ' + type;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
+        // Export
+        async function exportData() {
+            const all = await getAllFromIDB();
+            const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `estedev_export_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast('Data exported successfully', 'success');
         }
 
-        // Enter key
+        // Optimize
+        async function optimizeStorage() {
+            toast('Running system optimization...', 'warning');
+            if (globalThis.gc) globalThis.gc();
+            await new Promise(r => setTimeout(r, 1000));
+            updateStats();
+            toast('System optimized', 'success');
+        }
+
+        // Modal
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Toast
+        function toast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Enter keys
         document.getElementById('searchId').addEventListener('keypress', e => {
             if (e.key === 'Enter') search();
         });

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord ID Lookup</title>
+    <title>Divine Archive | Kutsal Veritabanı</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,10 +13,118 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f4d03f;
+            --gold-dark: #b8860b;
+            --purple: #4a148c;
+            --purple-light: #7c43bd;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --panel: rgba(20, 20, 30, 0.8);
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: #0f0f0f;
-            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--darker);
+            color: #e8e8e8;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(74, 20, 140, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                var(--darker);
+        }
+
+        /* Floating Orbs */
+        .orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: drift 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--purple-light) 0%, transparent 70%);
+            top: 40%;
+            right: -5%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, var(--gold-dark) 0%, transparent 70%);
+            bottom: -5%;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Sacred Geometry */
+        .mandala {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            height: 900px;
+            z-index: -1;
+            opacity: 0.06;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -24,35 +132,99 @@
 
         /* Header */
         header {
-            background: #1a1a1a;
-            border-bottom: 1px solid #333;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
+            padding: 50px 20px 30px;
         }
 
-        .logo {
+        .divine-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            position: relative;
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4));
+            animation: titlePulse 4s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6)); }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(232, 232, 232, 0.5);
+            margin-top: 15px;
+            letter-spacing: 0.6em;
+            text-transform: uppercase;
+        }
+
+        .divider {
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 30px auto;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '◈';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--gold);
             font-size: 1.5rem;
-            font-weight: 800;
-            color: #5865F2;
-            letter-spacing: -0.5px;
+            background: var(--darker);
+            padding: 0 20px;
         }
 
-        .admin-btn {
+        /* Navigation */
+        .celestial-nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .nav-rune {
+            padding: 14px 36px;
             background: transparent;
-            border: 1px solid #5865F2;
-            color: #5865F2;
-            padding: 10px 24px;
-            border-radius: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .admin-btn:hover {
-            background: #5865F2;
-            color: #fff;
+        .nav-rune::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .nav-rune:hover::before {
+            left: 100%;
+        }
+
+        .nav-rune.active {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2), inset 0 0 20px rgba(212, 175, 55, 0.05);
         }
 
         /* Main Content */
@@ -61,97 +233,21 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 40px;
         }
 
-        /* Search Box */
-        .search-container {
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-        }
-
-        .search-title {
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .search-subtitle {
-            color: #888;
-            margin-bottom: 40px;
-            font-size: 1rem;
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 20px 60px 20px 24px;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 1.1rem;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .search-input:focus {
-            border-color: #5865F2;
-        }
-
-        .search-input::placeholder {
-            color: #666;
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #5865F2;
-            border: none;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .search-btn:hover {
-            background: #4752C4;
-        }
-
-        .search-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Result Card */
-        .result-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 16px;
-            padding: 32px;
-            margin-top: 32px;
-            width: 100%;
-            max-width: 600px;
+        /* Sections */
+        .realm {
             display: none;
+            width: 100%;
+            max-width: 800px;
+            animation: materialize 0.6s ease;
         }
 
-        .result-card.show {
+        .realm.active {
             display: block;
-            animation: slideUp 0.3s ease;
         }
 
-        @keyframes slideUp {
+        @keyframes materialize {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -162,585 +258,1020 @@
             }
         }
 
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 24px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid #333;
-        }
-
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #333;
-            object-fit: cover;
-        }
-
-        .profile-info h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .profile-info .username {
-            color: #888;
-            font-size: 0.95rem;
-        }
-
-        .info-grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: #0f0f0f;
-            border-radius: 8px;
-        }
-
-        .info-item label {
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .info-item span {
-            color: #fff;
-            font-weight: 500;
-            font-family: monospace;
-        }
-
-        .not-found {
-            background: #1a1a1a;
-            border: 1px solid #ef4444;
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 32px;
-            color: #ef4444;
+        /* Search Section */
+        .search-container {
             text-align: center;
-            display: none;
         }
 
-        .not-found.show {
-            display: block;
+        .oracle-ring {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 50px;
         }
 
-        /* Admin Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
+        .ring-outer {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--gold);
+            border-right-color: var(--gold);
+            animation: spin 8s linear infinite;
+        }
+
+        .ring-middle {
+            position: absolute;
+            inset: 20px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-bottom-color: var(--gold);
+            border-left-color: var(--gold);
+            animation: spinReverse 12s linear infinite;
+        }
+
+        .ring-inner {
+            position: absolute;
+            inset: 40px;
+            border-radius: 50%;
+            background: var(--panel);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 900px;
-            max-height: 90vh;
-            overflow: hidden;
-        }
-
-        .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            font-size: 1.25rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #888;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .close-btn:hover {
-            color: #fff;
-        }
-
-        .modal-body {
-            padding: 24px;
-            overflow-y: auto;
-            max-height: 70vh;
-        }
-
-        /* Login Form */
-        .login-form {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 40px;
-        }
-
-        .login-form input {
-            width: 100%;
-            padding: 16px;
-            background: #0f0f0f;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1rem;
-            margin-bottom: 16px;
-        }
-
-        .login-form button {
-            width: 100%;
-            padding: 16px;
-            background: #5865F2;
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            display: none;
-        }
-
-        .admin-panel.active {
-            display: block;
-        }
-
-        .add-user-form {
-            background: #0f0f0f;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 0.95rem;
-        }
-
-        .btn-primary {
-            background: #5865F2;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        /* Users Table */
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .users-table th {
-            text-align: left;
-            padding: 12px;
-            color: #888;
-            font-weight: 500;
-            font-size: 0.85rem;
-            border-bottom: 1px solid #333;
-        }
-
-        .users-table td {
-            padding: 16px 12px;
-            border-bottom: 1px solid #222;
-        }
-
-        .users-table tr:hover {
-            background: #0f0f0f;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #333;
-            border-top-color: #5865F2;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            backdrop-filter: blur(10px);
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
+        @keyframes spinReverse {
+            to { transform: rotate(-360deg); }
+        }
+
+        .oracle-input {
+            width: 75%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--gold-light);
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 12px;
+            outline: none;
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+        }
+
+        .oracle-input:focus {
+            border-bottom-color: var(--gold);
+        }
+
+        .oracle-input::placeholder {
+            color: rgba(212, 175, 55, 0.3);
+        }
+
+        .oracle-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .oracle-btn:hover {
+            background: var(--gold);
+            color: var(--dark);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* Result Card */
+        .manifestation {
+            background: var(--panel);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manifestation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .manifestation.revealed {
+            display: block;
+            animation: manifest 0.5s ease;
+        }
+
+        @keyframes manifest {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .essence-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .avatar-glow {
+            position: relative;
+            width: 90px;
+            height: 90px;
+        }
+
+        .avatar-glow::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--gold), var(--purple-light), var(--gold));
+            animation: rotate 4s linear infinite;
+        }
+
+        .avatar {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--dark);
+        }
+
+        .identity h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            color: var(--gold-light);
+            margin-bottom: 5px;
+        }
+
+        .identity .handle {
+            color: rgba(232, 232, 232, 0.5);
+            font-size: 1rem;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .data-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 2px solid var(--gold);
+            padding: 18px;
+            border-radius: 0 12px 12px 0;
+            transition: all 0.3s;
+        }
+
+        .data-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            transform: translateX(5px);
+        }
+
+        .data-item label {
+            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 6px;
+            opacity: 0.8;
+        }
+
+        .data-item span {
+            font-size: 1.05rem;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .not-found {
+            background: var(--panel);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: #e74c3c;
+            display: none;
+        }
+
+        .not-found.revealed {
+            display: block;
+        }
+
+        /* Admin Section */
+        .temple-gate {
+            max-width: 420px;
+            margin: 0 auto;
+            background: var(--panel);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .gate-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            letter-spacing: 0.2em;
+        }
+
+        .gate-input {
+            width: 100%;
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            color: var(--gold-light);
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .gate-input:focus {
+            border-color: var(--gold);
+        }
+
+        .gate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 10px;
+            color: var(--dark);
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .gate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Sanctum */
+        .sanctum {
+            display: none;
+        }
+
+        .sanctum.revealed {
+            display: block;
+        }
+
+        /* Upload Area */
+        .upload-zone {
+            background: var(--panel);
+            border: 2px dashed rgba(212, 175, 55, 0.25);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .upload-zone:hover::before {
+            opacity: 1;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.03);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.08);
+            transform: scale(1.01);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            color: rgba(232, 232, 232, 0.4);
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Form */
+        .creation-form {
+            background: var(--panel);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 0.15em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-create {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-light));
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 20, 140, 0.4);
+        }
+
+        /* List */
+        .souls-list {
+            background: var(--panel);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .list-header {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            font-size: 1rem;
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+        }
+
+        .soul-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .soul-card:hover {
+            border-color: rgba(212, 175, 55, 0.2);
+            transform: translateX(8px);
+            background: rgba(212, 175, 55, 0.03);
+        }
+
+        .soul-info h4 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-light);
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .soul-info small {
+            color: rgba(232, 232, 232, 0.4);
+            font-size: 0.85rem;
+        }
+
+        .soul-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: transparent;
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .btn-icon.delete:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: auto;
+        }
+
+        .developer {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: rgba(232, 232, 232, 0.3);
+            letter-spacing: 0.2em;
+        }
+
+        .developer span {
+            color: var(--gold);
+            opacity: 0.7;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #5865F2;
+            bottom: 30px;
+            right: 30px;
+            padding: 18px 28px;
+            border-radius: 12px;
             color: #fff;
-            padding: 16px 24px;
-            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
             transform: translateX(400px);
-            transition: transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 2000;
+            border: 1px solid;
+            backdrop-filter: blur(10px);
         }
 
         .toast.show {
             transform: translateX(0);
         }
 
+        .toast.success {
+            background: rgba(39, 174, 96, 0.15);
+            border-color: #27ae60;
+            box-shadow: 0 10px 40px rgba(39, 174, 96, 0.2);
+        }
+
         .toast.error {
-            background: #ef4444;
+            background: rgba(231, 76, 60, 0.15);
+            border-color: #e74c3c;
+            box-shadow: 0 10px 40px rgba(231, 76, 60, 0.2);
         }
 
         .hidden { display: none !important; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .divine-title { font-size: 2rem; letter-spacing: 0.2em; }
+            .oracle-ring { width: 260px; height: 260px; }
+            .celestial-nav { flex-direction: column; align-items: center; }
+            .essence-header { flex-direction: column; text-align: center; }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">DISCORD ID LOOKUP</div>
-        <button class="admin-btn" onclick="openAdmin()">Admin Panel</button>
-    </header>
+    <div class="cosmic-bg"></div>
+    
+    <div class="orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-    <main>
-        <div class="search-container">
-            <h1 class="search-title">ESTEDEV</h1>
-            <p class="search-subtitle">Discord ID girerek kişi bilgilerini görüntüle</p>
-            
-            <div class="search-box">
-                <input type="text" class="search-input" id="searchId" placeholder="Örn: 844227552293027890">
-                <button class="search-btn" id="searchBtn" onclick="searchUser()">Ara</button>
-            </div>
+    <svg class="mandala" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <circle cx="50" cy="50" r="24" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <circle cx="50" cy="50" r="16" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <line x1="50" y1="2" x2="50" y2="98" stroke="currentColor" stroke-width="0.2"/>
+        <line x1="2" y1="50" x2="98" y2="50" stroke="currentColor" stroke-width="0.2"/>
+        <line x1="15" y1="15" x2="85" y2="85" stroke="currentColor" stroke-width="0.2"/>
+        <line x1="85" y1="15" x2="15" y2="85" stroke="currentColor" stroke-width="0.2"/>
+        <polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <polygon points="50,20 80,50 50,80 20,50" fill="none" stroke="currentColor" stroke-width="0.2"/>
+    </svg>
 
-            <div id="loader" class="loading hidden"></div>
+    <div class="container">
+        <header>
+            <h1 class="divine-title">Divine Archive</h1>
+            <div class="divider"></div>
+            <p class="subtitle">Kutsal Veritabanı</p>
+        </header>
 
-            <div id="resultCard" class="result-card">
-                <div class="profile-header">
-                    <img id="resAvatar" src="" alt="Avatar" class="avatar">
-                    <div class="profile-info">
-                        <h2 id="resName">-</h2>
-                        <p class="username" id="resUser">-</p>
+        <nav class="celestial-nav">
+            <button class="nav-rune active" onclick="changeRealm('lookup')">Kehanet</button>
+            <button class="nav-rune" onclick="changeRealm('admin')">Tapınak</button>
+        </nav>
+
+        <main>
+            <!-- Lookup -->
+            <section id="realm-lookup" class="realm active">
+                <div class="search-container">
+                    <div class="oracle-ring">
+                        <div class="ring-outer"></div>
+                        <div class="ring-middle"></div>
+                        <div class="ring-inner">
+                            <input type="text" class="oracle-input" id="searchInput" placeholder="Discord ID">
+                            <button class="oracle-btn" onclick="search()">Ara</button>
+                        </div>
+                    </div>
+
+                    <div id="result" class="manifestation">
+                        <div class="essence-header">
+                            <div class="avatar-glow">
+                                <img id="resAvatar" src="" class="avatar">
+                            </div>
+                            <div class="identity">
+                                <h2 id="resName">-</h2>
+                                <p class="handle" id="resUser">-</p>
+                            </div>
+                        </div>
+                        <div class="data-grid">
+                            <div class="data-item">
+                                <label>Discord ID</label>
+                                <span id="resId">-</span>
+                            </div>
+                            <div class="data-item">
+                                <label>E-posta</label>
+                                <span id="resEmail">-</span>
+                            </div>
+                            <div class="data-item">
+                                <label>Telefon</label>
+                                <span id="resPhone">-</span>
+                            </div>
+                            <div class="data-item" style="grid-column: 1 / -1;">
+                                <label>Notlar</label>
+                                <span id="resNotes">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="notFound" class="not-found">
+                        <p>⚠️ Bu ID ile kayıtlı ruh bulunamadı</p>
                     </div>
                 </div>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <label>Discord ID</label>
-                        <span id="resId">-</span>
-                    </div>
-                    <div class="info-item">
-                        <label>E-posta</label>
-                        <span id="resEmail">-</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Telefon</label>
-                        <span id="resPhone">-</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Notlar</label>
-                        <span id="resNotes">-</span>
-                    </div>
-                </div>
-            </div>
+            </section>
 
-            <div id="notFound" class="not-found">
-                ❌ Bu ID ile kayıtlı kullanıcı bulunamadı
-            </div>
-        </div>
-    </main>
-
-    <!-- Admin Modal -->
-    <div class="modal-overlay" id="adminModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>Admin Panel</h2>
-                <button class="close-btn" onclick="closeAdmin()">×</button>
-            </div>
-            <div class="modal-body">
-                <!-- Login -->
-                <div id="loginPanel" class="login-form">
-                    <h3 style="margin-bottom: 20px; text-align: center;">Giriş Yap</h3>
-                    <input type="password" id="adminPass" placeholder="Şifre">
-                    <button onclick="login()">Giriş Yap</button>
+            <!-- Admin -->
+            <section id="realm-admin" class="realm">
+                <div id="gate" class="temple-gate">
+                    <h2 class="gate-title">Tapınak Girişi</h2>
+                    <input type="password" class="gate-input" id="gatePass" placeholder="Kutsal Şifre">
+                    <button class="gate-btn" onclick="enter()">Giriş Yap</button>
                 </div>
 
-                <!-- Admin Panel -->
-                <div id="adminPanel" class="admin-panel">
-                    <div class="add-user-form">
-                        <h3 style="margin-bottom: 16px;">Yeni Kişi Ekle</h3>
-                        <div class="form-row">
-                            <div class="form-group">
+                <div id="sanctum" class="sanctum">
+                    <!-- File Upload -->
+                    <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()">
+                        <div class="upload-icon">📜</div>
+                        <div class="upload-text">Kutsal Yazı Yükle</div>
+                        <div class="upload-hint">JSON veya SQL dosyasını sürükleyin</div>
+                        <input type="file" class="file-input" id="fileIn" accept=".json,.sql" onchange="handleFile(this.files[0])">
+                    </div>
+
+                    <!-- Manual Form -->
+                    <div class="creation-form">
+                        <h3 class="form-title">✦ Yeni Ruh Kaydet ✦</h3>
+                        <div class="form-grid">
+                            <div class="input-group">
                                 <input type="text" id="newId" placeholder="Discord ID *">
                             </div>
-                            <div class="form-group">
+                            <div class="input-group">
                                 <input type="text" id="newName" placeholder="İsim">
                             </div>
-                            <div class="form-group">
+                            <div class="input-group">
                                 <input type="text" id="newUser" placeholder="Kullanıcı Adı">
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
+                            <div class="input-group">
                                 <input type="email" id="newEmail" placeholder="E-posta">
                             </div>
-                            <div class="form-group">
+                            <div class="input-group">
                                 <input type="text" id="newPhone" placeholder="Telefon">
                             </div>
-                            <div class="form-group">
+                            <div class="input-group">
                                 <input type="text" id="newAvatar" placeholder="Avatar URL">
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <input type="text" id="newNotes" placeholder="Notlar">
+                            <div class="input-group" style="grid-column: 1 / -1;">
+                                <textarea id="newNotes" placeholder="Notlar"></textarea>
                             </div>
                         </div>
-                        <button class="btn-primary" onclick="addUser()">Ekle</button>
+                        <button class="btn-create" onclick="save()">Kaydet</button>
                     </div>
 
-                    <h3 style="margin-bottom: 16px;">Kayıtlı Kişiler</h3>
-                    <table class="users-table">
-                        <thead>
-                            <tr>
-                                <th>İsim</th>
-                                <th>Discord ID</th>
-                                <th>E-posta</th>
-                                <th>İşlem</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersList"></tbody>
-                    </table>
+                    <!-- List -->
+                    <div class="souls-list">
+                        <h3 class="list-header">📜 Kayıtlı Ruhlar</h3>
+                        <div id="list"></div>
+                    </div>
+
+                    <button class="gate-btn" onclick="exit()" style="margin-top: 20px; background: linear-gradient(135deg, #c0392b, #e74c3c);">
+                        Ayrıl
+                    </button>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
+
+        <footer>
+            <p class="developer"><span>estedev</span> tarafından geliştirildi</p>
+        </footer>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        // SUPABASE AYARLARI - BUNLARI DOLDUR
+        // ===== SUPABASE CONFIG =====
+        // Bunları kendi bilgilerinle değiştir
         const SUPABASE_URL = 'https://shpflhdeswhotrctzmqj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocGZsaGRlc3dob3RyY3R6bXFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjExNzIsImV4cCI6MjA4OTU5NzE3Mn0.YFWgiqX7K6iMQ7HFdjDmHD5E1ouhFhRArqni0LBnMmA';
         
-        let supabase = null;
-        let isLocalMode = false;
-
-        // Başlat
-        if (SUPABASE_URL.includes('YOUR_')) {
-            console.log('Local mode aktif');
-            isLocalMode = true;
-        } else {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let db = null;
+        let useSQL = false;
+        
+        // Bağlantı dene
+        try {
+            if (!SUPABASE_URL.includes('YOUR_')) {
+                db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                useSQL = true;
+                console.log('SQL mode aktif');
+            }
+        } catch(e) {
+            console.log('Local mode');
         }
 
-        const ADMIN_PASS = 'cemreyiseviyorum';
-        let users = [];
+        // Local storage
+        const KEY = 'divine_souls';
+        const getSouls = () => JSON.parse(localStorage.getItem(KEY) || '[]');
+        const setSouls = (d) => localStorage.setItem(KEY, JSON.stringify(d));
 
-        // Local Storage
-        function getUsers() {
-            return JSON.parse(localStorage.getItem('discord_users') || '[]');
+        // Navigation
+        function changeRealm(r) {
+            document.querySelectorAll('.realm').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.nav-rune').forEach(x => x.classList.remove('active'));
+            document.getElementById('realm-' + r).classList.add('active');
+            event.target.classList.add('active');
         }
 
-        function saveUsers(data) {
-            localStorage.setItem('discord_users', JSON.stringify(data));
-        }
+        // Search
+        async function search() {
+            const id = document.getElementById('searchInput').value.trim();
+            if (!id) return toast('ID girin', 'error');
 
-        // Arama
-        async function searchUser() {
-            const id = document.getElementById('searchId').value.trim();
-            if (!id) return showToast('ID girin', 'error');
+            document.getElementById('result').classList.remove('revealed');
+            document.getElementById('notFound').classList.remove('revealed');
 
-            document.getElementById('searchBtn').disabled = true;
-            document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('resultCard').classList.remove('show');
-            document.getElementById('notFound').classList.remove('show');
+            let soul = null;
 
-            let user = null;
-
-            if (isLocalMode) {
+            if (useSQL) {
+                const { data } = await db.from('souls').select('*').eq('discord_id', id).single();
+                soul = data;
+            } else {
+                soul = getSouls().find(s => s.discord_id === id);
                 await new Promise(r => setTimeout(r, 300));
-                user = getUsers().find(u => u.discord_id === id);
-            } else {
-                const { data } = await supabase
-                    .from('discord_users')
-                    .select('*')
-                    .eq('discord_id', id)
-                    .single();
-                user = data;
             }
 
-            document.getElementById('loader').classList.add('hidden');
-            document.getElementById('searchBtn').disabled = false;
-
-            if (user) {
-                showResult(user);
-            } else {
-                document.getElementById('notFound').classList.add('show');
-            }
+            if (soul) showResult(soul);
+            else document.getElementById('notFound').classList.add('revealed');
         }
 
-        function showResult(user) {
-            document.getElementById('resAvatar').src = user.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png';
-            document.getElementById('resName').textContent = user.name || user.username || 'Bilinmiyor';
-            document.getElementById('resUser').textContent = user.username ? '@' + user.username : '';
-            document.getElementById('resId').textContent = user.discord_id;
-            document.getElementById('resEmail').textContent = user.email || 'Belirtilmemiş';
-            document.getElementById('resPhone').textContent = user.phone || 'Belirtilmemiş';
-            document.getElementById('resNotes').textContent = user.notes || 'Not yok';
-            
-            document.getElementById('resultCard').classList.add('show');
+        function showResult(s) {
+            document.getElementById('resAvatar').src = s.avatar_url || `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random()*6)}.png`;
+            document.getElementById('resName').textContent = s.name || 'İsimsiz';
+            document.getElementById('resUser').textContent = s.username ? '@' + s.username : '';
+            document.getElementById('resId').textContent = s.discord_id;
+            document.getElementById('resEmail').textContent = s.email || 'Belirtilmemiş';
+            document.getElementById('resPhone').textContent = s.phone || 'Belirtilmemiş';
+            document.getElementById('resNotes').textContent = s.notes || 'Not yok';
+            document.getElementById('result').classList.add('revealed');
         }
 
         // Admin
-        function openAdmin() {
-            document.getElementById('adminModal').classList.add('active');
-        }
-
-        function closeAdmin() {
-            document.getElementById('adminModal').classList.remove('active');
-            document.getElementById('loginPanel').style.display = 'block';
-            document.getElementById('adminPanel').classList.remove('active');
-            document.getElementById('adminPass').value = '';
-        }
-
-        function login() {
-            if (document.getElementById('adminPass').value === ADMIN_PASS) {
-                document.getElementById('loginPanel').style.display = 'none';
-                document.getElementById('adminPanel').classList.add('active');
-                loadUsers();
+        function enter() {
+            if (document.getElementById('gatePass').value === 'cemreyiseviyorum') {
+                document.getElementById('gate').style.display = 'none';
+                document.getElementById('sanctum').classList.add('revealed');
+                loadList();
+                toast('Hoş geldiniz', 'success');
             } else {
-                showToast('Yanlış şifre', 'error');
+                toast('Yanlış şifre', 'error');
             }
         }
 
-        async function loadUsers() {
-            if (isLocalMode) {
-                users = getUsers();
-            } else {
-                const { data } = await supabase.from('discord_users').select('*').order('created_at', { ascending: false });
-                users = data || [];
+        function exit() {
+            document.getElementById('sanctum').classList.remove('revealed');
+            document.getElementById('gate').style.display = 'block';
+            document.getElementById('gatePass').value = '';
+        }
+
+        // File Upload (JSON & SQL)
+        const dropZone = document.getElementById('dropZone');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, (ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
+            });
+        });
+
+        ['dragenter', 'dragover'].forEach(e => {
+            dropZone.addEventListener(e, () => dropZone.classList.add('dragover'));
+        });
+
+        ['dragleave', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, () => dropZone.classList.remove('dragover'));
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        async function handleFile(file) {
+            if (!file) return;
+            
+            const text = await file.text();
+            const ext = file.name.split('.').pop().toLowerCase();
+
+            try {
+                if (ext === 'json') {
+                    const data = JSON.parse(text);
+                    if (Array.isArray(data)) {
+                        for (const item of data) await importSoul(item);
+                    } else {
+                        await importSoul(data);
+                    }
+                    toast('JSON yüklendi', 'success');
+                } else if (ext === 'sql') {
+                    // SQL insert statements parse
+                    const inserts = text.match(/INSERT INTO.*?VALUES\s*\([^)]+\)/gi) || [];
+                    for (const insert of inserts) {
+                        const values = insert.match(/\([^)]+\)/g);
+                        if (values && values[0]) {
+                            const cols = extractSQLValues(values[0]);
+                            await importSoul(cols);
+                        }
+                    }
+                    toast('SQL yüklendi', 'success');
+                }
+                loadList();
+            } catch(e) {
+                toast('Dosya okunamadı: ' + e.message, 'error');
             }
-            renderUsers();
         }
 
-        function renderUsers() {
-            const tbody = document.getElementById('usersList');
-            tbody.innerHTML = users.map(u => `
-                <tr>
-                    <td>${u.name || u.username || '-'}</td>
-                    <td>${u.discord_id}</td>
-                    <td>${u.email || '-'}</td>
-                    <td><button class="btn-danger" onclick="deleteUser('${u.id}')">Sil</button></td>
-                </tr>
-            `).join('');
+        function extractSQLValues(str) {
+            // Basit SQL parse
+            const cleaned = str.replace(/^\(|\)$/g, '').replace(/'/g, '');
+            const parts = cleaned.split(',').map(s => s.trim());
+            return {
+                discord_id: parts[0] || '',
+                name: parts[1] || '',
+                username: parts[2] || '',
+                email: parts[3] || '',
+                phone: parts[4] || '',
+                avatar_url: parts[5] || '',
+                notes: parts[6] || ''
+            };
         }
 
-        async function addUser() {
-            const newUser = {
-                id: isLocalMode ? Date.now().toString() : undefined,
-                discord_id: document.getElementById('newId').value,
-                name: document.getElementById('newName').value,
-                username: document.getElementById('newUser').value,
-                email: document.getElementById('newEmail').value,
-                phone: document.getElementById('newPhone').value,
-                avatar_url: document.getElementById('newAvatar').value,
-                notes: document.getElementById('newNotes').value,
+        async function importSoul(data) {
+            if (!data.discord_id) return;
+            
+            const soul = {
+                discord_id: data.discord_id,
+                name: data.name || data.username || '',
+                username: data.username || '',
+                email: data.email || '',
+                phone: data.phone || '',
+                avatar_url: data.avatar_url || data.avatar_hash || '',
+                notes: data.notes || '',
                 created_at: new Date().toISOString()
             };
 
-            if (!newUser.discord_id) return showToast('Discord ID gerekli', 'error');
-
-            if (isLocalMode) {
-                const list = getUsers();
-                if (list.find(u => u.discord_id === newUser.discord_id)) {
-                    return showToast('Bu ID zaten var', 'error');
-                }
-                list.push(newUser);
-                saveUsers(list);
-                showToast('Eklendi', 'success');
-                clearForm();
-                loadUsers();
+            if (useSQL) {
+                await db.from('souls').insert([soul]);
             } else {
-                const { error } = await supabase.from('discord_users').insert([newUser]);
-                if (error) return showToast(error.message, 'error');
-                showToast('Eklendi', 'success');
-                clearForm();
-                loadUsers();
+                const souls = getSouls();
+                if (!souls.find(s => s.discord_id === soul.discord_id)) {
+                    soul.id = Date.now();
+                    souls.push(soul);
+                    setSouls(souls);
+                }
             }
         }
 
-        async function deleteUser(id) {
+        // Manual Save
+        async function save() {
+            const soul = {
+                discord_id: document.getElementById('newId').value.trim(),
+                name: document.getElementById('newName').value.trim(),
+                username: document.getElementById('newUser').value.trim(),
+                email: document.getElementById('newEmail').value.trim(),
+                phone: document.getElementById('newPhone').value.trim(),
+                avatar_url: document.getElementById('newAvatar').value.trim(),
+                notes: document.getElementById('newNotes').value.trim()
+            };
+
+            if (!soul.discord_id) return toast('Discord ID gerekli', 'error');
+
+            if (useSQL) {
+                const { error } = await db.from('souls').insert([soul]);
+                if (error) return toast(error.message, 'error');
+            } else {
+                const souls = getSouls();
+                if (souls.find(s => s.discord_id === soul.discord_id)) {
+                    return toast('Bu ID zaten var', 'error');
+                }
+                soul.id = Date.now();
+                souls.push(soul);
+                setSouls(souls);
+            }
+
+            clearForm();
+            loadList();
+            toast('Kaydedildi', 'success');
+        }
+
+        // List
+        async function loadList() {
+            let souls = [];
+            
+            if (useSQL) {
+                const { data } = await db.from('souls').select('*').order('created_at', { ascending: false });
+                souls = data || [];
+            } else {
+                souls = getSouls();
+            }
+
+            const container = document.getElementById('list');
+            if (souls.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:rgba(232,232,232,0.4);padding:20px;">Kayıt yok</p>';
+                return;
+            }
+
+            container.innerHTML = souls.map(s => `
+                <div class="soul-card">
+                    <div class="soul-info">
+                        <h4>${s.name || 'İsimsiz'}</h4>
+                        <small>${s.discord_id}</small>
+                    </div>
+                    <div class="soul-actions">
+                        <button class="btn-icon" onclick="edit('${s.id}')">✎</button>
+                        <button class="btn-icon delete" onclick="remove('${s.id}')">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function remove(id) {
             if (!confirm('Silmek istediğinize emin misiniz?')) return;
             
-            if (isLocalMode) {
-                saveUsers(getUsers().filter(u => u.id != id));
-                loadUsers();
+            if (useSQL) {
+                await db.from('souls').delete().eq('id', id);
             } else {
-                await supabase.from('discord_users').delete().eq('id', id);
-                loadUsers();
+                setSouls(getSouls().filter(s => s.id != id));
             }
+            loadList();
+            toast('Silindi', 'success');
+        }
+
+        function edit(id) {
+            const souls = useSQL ? [] : getSouls(); // SQL'de edit için form doldur
+            const s = souls.find(x => x.id == id);
+            if (!s) return;
+            
+            document.getElementById('newId').value = s.discord_id;
+            document.getElementById('newName').value = s.name || '';
+            document.getElementById('newUser').value = s.username || '';
+            document.getElementById('newEmail').value = s.email || '';
+            document.getElementById('newPhone').value = s.phone || '';
+            document.getElementById('newAvatar').value = s.avatar_url || '';
+            document.getElementById('newNotes').value = s.notes || '';
+            
+            remove(id);
+            toast('Düzenleme için yüklendi', 'success');
         }
 
         function clearForm() {
-            document.getElementById('newId').value = '';
-            document.getElementById('newName').value = '';
-            document.getElementById('newUser').value = '';
-            document.getElementById('newEmail').value = '';
-            document.getElementById('newPhone').value = '';
-            document.getElementById('newAvatar').value = '';
-            document.getElementById('newNotes').value = '';
+            ['newId','newName','newUser','newEmail','newPhone','newAvatar','newNotes'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
         }
 
-        function showToast(msg, type) {
+        function toast(msg, type) {
             const t = document.getElementById('toast');
             t.textContent = msg;
-            t.className = 'toast ' + (type === 'error' ? 'error' : '');
+            t.className = 'toast ' + type;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        document.getElementById('searchId').addEventListener('keypress', e => {
-            if (e.key === 'Enter') searchUser();
+        // Enter key
+        document.getElementById('searchInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') search();
         });
-        document.getElementById('adminPass').addEventListener('keypress', e => {
-            if (e.key === 'Enter') login();
+        document.getElementById('gatePass').addEventListener('keypress', e => {
+            if (e.key === 'Enter') enter();
         });
     </script>
 </body>

@@ -33,7 +33,6 @@
             position: relative;
         }
 
-        /* Animated Background */
         .cosmic-bg {
             position: fixed;
             top: 0;
@@ -44,11 +43,9 @@
             background: 
                 radial-gradient(ellipse at 20% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(74, 20, 140, 0.2) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
                 var(--darker);
         }
 
-        /* Floating Orbs */
         .orbs {
             position: fixed;
             top: 0;
@@ -73,7 +70,6 @@
             background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
             top: -10%;
             left: -10%;
-            animation-delay: 0s;
         }
 
         .orb-2 {
@@ -82,34 +78,23 @@
             background: radial-gradient(circle, var(--purple-light) 0%, transparent 70%);
             top: 40%;
             right: -5%;
-            animation-delay: -5s;
-        }
-
-        .orb-3 {
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, var(--gold-dark) 0%, transparent 70%);
-            bottom: -5%;
-            left: 30%;
-            animation-delay: -10s;
+            animation-delay: -7s;
         }
 
         @keyframes drift {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
         }
 
-        /* Sacred Geometry */
         .mandala {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 900px;
-            height: 900px;
+            width: 800px;
+            height: 800px;
             z-index: -1;
-            opacity: 0.06;
+            opacity: 0.05;
             animation: rotate 60s linear infinite;
         }
 
@@ -118,7 +103,6 @@
             to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -130,7 +114,6 @@
             flex-direction: column;
         }
 
-        /* Header */
         header {
             text-align: center;
             padding: 50px 20px 30px;
@@ -145,14 +128,7 @@
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
             letter-spacing: 0.4em;
-            position: relative;
             filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4));
-            animation: titlePulse 4s ease-in-out infinite;
-        }
-
-        @keyframes titlePulse {
-            0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3)); }
-            50% { filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6)); }
         }
 
         .subtitle {
@@ -183,7 +159,6 @@
             padding: 0 20px;
         }
 
-        /* Navigation */
         .celestial-nav {
             display: flex;
             justify-content: center;
@@ -201,33 +176,15 @@
             letter-spacing: 0.25em;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-rune::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
-            transition: left 0.6s;
-        }
-
-        .nav-rune:hover::before {
-            left: 100%;
+            transition: all 0.4s;
         }
 
         .nav-rune.active {
             background: rgba(212, 175, 55, 0.1);
             border-color: var(--gold);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2), inset 0 0 20px rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
         }
 
-        /* Main Content */
         main {
             flex: 1;
             display: flex;
@@ -235,32 +192,20 @@
             align-items: center;
         }
 
-        /* Sections */
         .realm {
             display: none;
             width: 100%;
             max-width: 800px;
-            animation: materialize 0.6s ease;
         }
 
         .realm.active {
             display: block;
+            animation: materialize 0.6s ease;
         }
 
         @keyframes materialize {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Search Section */
-        .search-container {
-            text-align: center;
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .oracle-ring {
@@ -276,18 +221,7 @@
             border-radius: 50%;
             border: 2px solid transparent;
             border-top-color: var(--gold);
-            border-right-color: var(--gold);
             animation: spin 8s linear infinite;
-        }
-
-        .ring-middle {
-            position: absolute;
-            inset: 20px;
-            border-radius: 50%;
-            border: 1px solid transparent;
-            border-bottom-color: var(--gold);
-            border-left-color: var(--gold);
-            animation: spinReverse 12s linear infinite;
         }
 
         .ring-inner {
@@ -300,15 +234,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        @keyframes spinReverse {
-            to { transform: rotate(-360deg); }
         }
 
         .oracle-input {
@@ -323,15 +252,6 @@
             padding: 12px;
             outline: none;
             margin-bottom: 20px;
-            letter-spacing: 0.1em;
-        }
-
-        .oracle-input:focus {
-            border-bottom-color: var(--gold);
-        }
-
-        .oracle-input::placeholder {
-            color: rgba(212, 175, 55, 0.3);
         }
 
         .oracle-btn {
@@ -343,39 +263,21 @@
             color: var(--gold);
             font-family: 'Cinzel', serif;
             font-size: 0.75rem;
-            letter-spacing: 0.1em;
             cursor: pointer;
             transition: all 0.3s;
-            text-transform: uppercase;
         }
 
         .oracle-btn:hover {
             background: var(--gold);
             color: var(--dark);
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
-            transform: scale(1.05);
         }
 
-        /* Result Card */
         .manifestation {
             background: var(--panel);
             border: 1px solid rgba(212, 175, 55, 0.15);
             border-radius: 24px;
             padding: 40px;
-            backdrop-filter: blur(20px);
             display: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .manifestation::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
         .manifestation.revealed {
@@ -384,14 +286,8 @@
         }
 
         @keyframes manifest {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .essence-header {
@@ -431,12 +327,6 @@
             font-family: 'Cinzel', serif;
             font-size: 1.6rem;
             color: var(--gold-light);
-            margin-bottom: 5px;
-        }
-
-        .identity .handle {
-            color: rgba(232, 232, 232, 0.5);
-            font-size: 1rem;
         }
 
         .data-grid {
@@ -450,12 +340,6 @@
             border-left: 2px solid var(--gold);
             padding: 18px;
             border-radius: 0 12px 12px 0;
-            transition: all 0.3s;
-        }
-
-        .data-item:hover {
-            background: rgba(212, 175, 55, 0.05);
-            transform: translateX(5px);
         }
 
         .data-item label {
@@ -464,15 +348,7 @@
             font-size: 0.7rem;
             color: var(--gold);
             text-transform: uppercase;
-            letter-spacing: 0.15em;
             margin-bottom: 6px;
-            opacity: 0.8;
-        }
-
-        .data-item span {
-            font-size: 1.05rem;
-            color: #fff;
-            word-break: break-all;
         }
 
         .not-found {
@@ -489,7 +365,6 @@
             display: block;
         }
 
-        /* Admin Section */
         .temple-gate {
             max-width: 420px;
             margin: 0 auto;
@@ -505,7 +380,6 @@
             color: var(--gold);
             font-size: 1.3rem;
             margin-bottom: 30px;
-            letter-spacing: 0.2em;
         }
 
         .gate-input {
@@ -518,13 +392,8 @@
             font-family: 'Cinzel', serif;
             font-size: 1rem;
             text-align: center;
-            letter-spacing: 0.1em;
             margin-bottom: 20px;
             outline: none;
-        }
-
-        .gate-input:focus {
-            border-color: var(--gold);
         }
 
         .gate-btn {
@@ -537,18 +406,9 @@
             font-family: 'Cinzel', serif;
             font-size: 0.95rem;
             font-weight: 600;
-            letter-spacing: 0.15em;
             cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
         }
 
-        .gate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Sanctum */
         .sanctum {
             display: none;
         }
@@ -557,7 +417,6 @@
             display: block;
         }
 
-        /* Upload Area */
         .upload-zone {
             background: var(--panel);
             border: 2px dashed rgba(212, 175, 55, 0.25);
@@ -567,35 +426,11 @@
             margin-bottom: 30px;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        .upload-zone::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .upload-zone:hover::before {
-            opacity: 1;
-        }
-
-        .upload-zone:hover {
+        .upload-zone:hover, .upload-zone.dragover {
             border-color: var(--gold);
-            background: rgba(212, 175, 55, 0.03);
-        }
-
-        .upload-zone.dragover {
-            border-color: var(--gold-light);
-            background: rgba(212, 175, 55, 0.08);
-            transform: scale(1.01);
+            background: rgba(212, 175, 55, 0.05);
         }
 
         .upload-icon {
@@ -607,19 +442,12 @@
             font-family: 'Cinzel', serif;
             color: var(--gold);
             font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-
-        .upload-hint {
-            color: rgba(232, 232, 232, 0.4);
-            font-size: 0.9rem;
         }
 
         .file-input {
             display: none;
         }
 
-        /* Form */
         .creation-form {
             background: var(--panel);
             border: 1px solid rgba(212, 175, 55, 0.15);
@@ -634,7 +462,6 @@
             font-size: 1.1rem;
             text-align: center;
             margin-bottom: 25px;
-            letter-spacing: 0.15em;
         }
 
         .form-grid {
@@ -647,26 +474,13 @@
         .input-group input,
         .input-group textarea {
             width: 100%;
-            padding: 14px 16px;
+            padding: 14px;
             background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(212, 175, 55, 0.15);
             border-radius: 10px;
             color: #fff;
-            font-family: 'Cormorant Garamond', serif;
             font-size: 1.05rem;
             outline: none;
-            transition: all 0.3s;
-        }
-
-        .input-group input:focus,
-        .input-group textarea:focus {
-            border-color: var(--gold);
-            background: rgba(212, 175, 55, 0.05);
-        }
-
-        .input-group textarea {
-            resize: vertical;
-            min-height: 80px;
         }
 
         .btn-create {
@@ -677,19 +491,9 @@
             border-radius: 10px;
             color: #fff;
             font-family: 'Cinzel', serif;
-            font-size: 0.9rem;
-            letter-spacing: 0.15em;
             cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
         }
 
-        .btn-create:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(74, 20, 140, 0.4);
-        }
-
-        /* List */
         .souls-list {
             background: var(--panel);
             border: 1px solid rgba(212, 175, 55, 0.15);
@@ -697,47 +501,20 @@
             padding: 30px;
         }
 
-        .list-header {
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            font-size: 1rem;
-            margin-bottom: 20px;
-            letter-spacing: 0.1em;
-        }
-
         .soul-card {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(212, 175, 55, 0.08);
             border-radius: 12px;
-            padding: 18px 20px;
+            padding: 18px;
             margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s;
-        }
-
-        .soul-card:hover {
-            border-color: rgba(212, 175, 55, 0.2);
-            transform: translateX(8px);
-            background: rgba(212, 175, 55, 0.03);
         }
 
         .soul-info h4 {
             font-family: 'Cinzel', serif;
             color: var(--gold-light);
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-
-        .soul-info small {
-            color: rgba(232, 232, 232, 0.4);
-            font-size: 0.85rem;
-        }
-
-        .soul-actions {
-            display: flex;
-            gap: 8px;
         }
 
         .btn-icon {
@@ -748,24 +525,14 @@
             background: transparent;
             color: var(--gold);
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-left: 8px;
         }
 
-        .btn-icon:hover {
-            background: var(--gold);
-            color: var(--dark);
+        .btn-icon.delete {
+            border-color: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
         }
 
-        .btn-icon.delete:hover {
-            background: #e74c3c;
-            border-color: #e74c3c;
-            color: #fff;
-        }
-
-        /* Footer */
         footer {
             text-align: center;
             padding: 30px;
@@ -776,15 +543,12 @@
             font-family: 'Cinzel', serif;
             font-size: 0.8rem;
             color: rgba(232, 232, 232, 0.3);
-            letter-spacing: 0.2em;
         }
 
         .developer span {
             color: var(--gold);
-            opacity: 0.7;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -793,13 +557,10 @@
             border-radius: 12px;
             color: #fff;
             font-family: 'Cinzel', serif;
-            font-size: 0.9rem;
-            letter-spacing: 0.05em;
             transform: translateX(400px);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s;
             z-index: 2000;
             border: 1px solid;
-            backdrop-filter: blur(10px);
         }
 
         .toast.show {
@@ -809,24 +570,34 @@
         .toast.success {
             background: rgba(39, 174, 96, 0.15);
             border-color: #27ae60;
-            box-shadow: 0 10px 40px rgba(39, 174, 96, 0.2);
         }
 
         .toast.error {
             background: rgba(231, 76, 60, 0.15);
             border-color: #e74c3c;
-            box-shadow: 0 10px 40px rgba(231, 76, 60, 0.2);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+
+        .status-online {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+
+        .status-offline {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
         }
 
         .hidden { display: none !important; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .divine-title { font-size: 2rem; letter-spacing: 0.2em; }
-            .oracle-ring { width: 260px; height: 260px; }
-            .celestial-nav { flex-direction: column; align-items: center; }
-            .essence-header { flex-direction: column; text-align: center; }
-        }
     </style>
 </head>
 <body>
@@ -835,21 +606,12 @@
     <div class="orbs">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
     </div>
 
     <svg class="mandala" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" stroke-width="0.2"/>
-        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="0.2"/>
-        <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="0.2"/>
-        <circle cx="50" cy="50" r="24" fill="none" stroke="currentColor" stroke-width="0.2"/>
-        <circle cx="50" cy="50" r="16" fill="none" stroke="currentColor" stroke-width="0.2"/>
-        <line x1="50" y1="2" x2="50" y2="98" stroke="currentColor" stroke-width="0.2"/>
-        <line x1="2" y1="50" x2="98" y2="50" stroke="currentColor" stroke-width="0.2"/>
-        <line x1="15" y1="15" x2="85" y2="85" stroke="currentColor" stroke-width="0.2"/>
-        <line x1="85" y1="15" x2="15" y2="85" stroke="currentColor" stroke-width="0.2"/>
-        <polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="currentColor" stroke-width="0.2"/>
-        <polygon points="50,20 80,50 50,80 20,50" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-width="0.2"/>
+        <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" stroke-width="0.2"/>
     </svg>
 
     <div class="container">
@@ -870,11 +632,14 @@
                 <div class="search-container">
                     <div class="oracle-ring">
                         <div class="ring-outer"></div>
-                        <div class="ring-middle"></div>
                         <div class="ring-inner">
                             <input type="text" class="oracle-input" id="searchInput" placeholder="Discord ID">
                             <button class="oracle-btn" onclick="search()">Ara</button>
                         </div>
+                    </div>
+
+                    <div id="connectionStatus" style="text-align: center; margin-bottom: 20px;">
+                        <span id="statusText" class="status-badge status-offline">Local Mode</span>
                     </div>
 
                     <div id="result" class="manifestation">
@@ -884,7 +649,7 @@
                             </div>
                             <div class="identity">
                                 <h2 id="resName">-</h2>
-                                <p class="handle" id="resUser">-</p>
+                                <p id="resUser" style="color: rgba(232,232,232,0.5);">-</p>
                             </div>
                         </div>
                         <div class="data-grid">
@@ -923,11 +688,13 @@
 
                 <div id="sanctum" class="sanctum">
                     <!-- File Upload -->
-                    <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()">
+                    <div class="upload-zone" id="dropZone">
                         <div class="upload-icon">📜</div>
                         <div class="upload-text">Kutsal Yazı Yükle</div>
-                        <div class="upload-hint">JSON veya SQL dosyasını sürükleyin</div>
-                        <input type="file" class="file-input" id="fileIn" accept=".json,.sql" onchange="handleFile(this.files[0])">
+                        <div style="color: rgba(232,232,232,0.4); font-size: 0.9rem; margin-top: 8px;">
+                            JSON veya SQL dosyasını sürükleyin veya tıklayın
+                        </div>
+                        <input type="file" class="file-input" id="fileIn" accept=".json,.sql">
                     </div>
 
                     <!-- Manual Form -->
@@ -953,7 +720,7 @@
                                 <input type="text" id="newAvatar" placeholder="Avatar URL">
                             </div>
                             <div class="input-group" style="grid-column: 1 / -1;">
-                                <textarea id="newNotes" placeholder="Notlar"></textarea>
+                                <textarea id="newNotes" rows="2" placeholder="Notlar"></textarea>
                             </div>
                         </div>
                         <button class="btn-create" onclick="save()">Kaydet</button>
@@ -961,7 +728,7 @@
 
                     <!-- List -->
                     <div class="souls-list">
-                        <h3 class="list-header">📜 Kayıtlı Ruhlar</h3>
+                        <h3 style="font-family: Cinzel; color: var(--gold); margin-bottom: 20px;">📜 Kayıtlı Ruhlar</h3>
                         <div id="list"></div>
                     </div>
 
@@ -981,7 +748,6 @@
 
     <script>
         // ===== SUPABASE CONFIG =====
-        // Bunları kendi bilgilerinle değiştir
         const SUPABASE_URL = 'https://shpflhdeswhotrctzmqj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocGZsaGRlc3dob3RyY3R6bXFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjExNzIsImV4cCI6MjA4OTU5NzE3Mn0.YFWgiqX7K6iMQ7HFdjDmHD5E1ouhFhRArqni0LBnMmA';
         
@@ -989,18 +755,47 @@
         let useSQL = false;
         
         // Bağlantı dene
-        try {
-            if (!SUPABASE_URL.includes('YOUR_')) {
-                db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                useSQL = true;
-                console.log('SQL mode aktif');
+        async function initDB() {
+            try {
+                if (SUPABASE_URL.includes('YOUR_') || SUPABASE_KEY.includes('YOUR_')) {
+                    console.log('Local mode - Supabase bilgileri girilmemiş');
+                    updateStatus(false);
+                    return;
+                }
+                
+                const { createClient } = supabase;
+                db = createClient(SUPABASE_URL, SUPABASE_KEY);
+                
+                // Test bağlantı
+                const { data, error } = await db.from('souls').select('count').limit(1);
+                
+                if (!error) {
+                    useSQL = true;
+                    updateStatus(true);
+                    console.log('SQL Connected');
+                } else {
+                    console.error('SQL Error:', error);
+                    updateStatus(false);
+                }
+            } catch(e) {
+                console.error('Connection failed:', e);
+                updateStatus(false);
             }
-        } catch(e) {
-            console.log('Local mode');
+        }
+
+        function updateStatus(connected) {
+            const badge = document.getElementById('statusText');
+            if (connected) {
+                badge.textContent = 'SQL Connected';
+                badge.className = 'status-badge status-online';
+            } else {
+                badge.textContent = 'Local Mode';
+                badge.className = 'status-badge status-offline';
+            }
         }
 
         // Local storage
-        const KEY = 'divine_souls';
+        const KEY = 'divine_souls_v2';
         const getSouls = () => JSON.parse(localStorage.getItem(KEY) || '[]');
         const setSouls = (d) => localStorage.setItem(KEY, JSON.stringify(d));
 
@@ -1022,26 +817,38 @@
 
             let soul = null;
 
-            if (useSQL) {
-                const { data } = await db.from('souls').select('*').eq('discord_id', id).single();
-                soul = data;
-            } else {
+            if (useSQL && db) {
+                try {
+                    const { data, error } = await db.from('souls').select('*').eq('discord_id', id).single();
+                    if (!error && data) soul = data;
+                } catch(e) {
+                    console.error('Search error:', e);
+                }
+            }
+            
+            // Local fallback
+            if (!soul) {
                 soul = getSouls().find(s => s.discord_id === id);
-                await new Promise(r => setTimeout(r, 300));
             }
 
-            if (soul) showResult(soul);
-            else document.getElementById('notFound').classList.add('revealed');
+            if (soul) {
+                showResult(soul);
+            } else {
+                document.getElementById('notFound').classList.add('revealed');
+            }
         }
 
         function showResult(s) {
-            document.getElementById('resAvatar').src = s.avatar_url || `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random()*6)}.png`;
-            document.getElementById('resName').textContent = s.name || 'İsimsiz';
-            document.getElementById('resUser').textContent = s.username ? '@' + s.username : '';
+            const avatarUrl = s.avatar_url || s.avatar_hash || 
+                `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 6)}.png`;
+            
+            document.getElementById('resAvatar').src = avatarUrl;
+            document.getElementById('resName').textContent = s.name || 'İsimsiz Ruh';
+            document.getElementById('resUser').textContent = s.username ? `@${s.username}` : '';
             document.getElementById('resId').textContent = s.discord_id;
             document.getElementById('resEmail').textContent = s.email || 'Belirtilmemiş';
             document.getElementById('resPhone').textContent = s.phone || 'Belirtilmemiş';
-            document.getElementById('resNotes').textContent = s.notes || 'Not yok';
+            document.getElementById('resNotes').textContent = s.notes || 'Not bulunmuyor';
             document.getElementById('result').classList.add('revealed');
         }
 
@@ -1063,100 +870,148 @@
             document.getElementById('gatePass').value = '';
         }
 
-        // File Upload (JSON & SQL)
+        // ===== FILE UPLOAD - DÜZELTİLMİŞ =====
         const dropZone = document.getElementById('dropZone');
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
-            dropZone.addEventListener(e, (ev) => {
-                ev.preventDefault();
-                ev.stopPropagation();
-            });
+        const fileInput = document.getElementById('fileIn');
+
+        // Tıklayarak aç
+        dropZone.addEventListener('click', (e) => {
+            if (e.target !== fileInput) {
+                fileInput.click();
+            }
         });
 
-        ['dragenter', 'dragover'].forEach(e => {
-            dropZone.addEventListener(e, () => dropZone.classList.add('dragover'));
+        // Dosya seçildiğinde
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                handleFile(e.target.files[0]);
+            }
         });
 
-        ['dragleave', 'drop'].forEach(e => {
-            dropZone.addEventListener(e, () => dropZone.classList.remove('dragover'));
+        // Drag & Drop
+        dropZone.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('dragover');
         });
 
         dropZone.addEventListener('drop', (e) => {
-            const file = e.dataTransfer.files[0];
-            if (file) handleFile(file);
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files && files[0]) {
+                handleFile(files[0]);
+            }
         });
 
         async function handleFile(file) {
-            if (!file) return;
+            console.log('File received:', file.name);
             
-            const text = await file.text();
-            const ext = file.name.split('.').pop().toLowerCase();
+            if (!file.name.match(/\.(json|sql)$/i)) {
+                return toast('Sadece .json veya .sql dosyası', 'error');
+            }
 
             try {
-                if (ext === 'json') {
+                const text = await file.text();
+                console.log('File content loaded, length:', text.length);
+
+                if (file.name.endsWith('.json')) {
                     const data = JSON.parse(text);
+                    console.log('JSON parsed:', Array.isArray(data) ? `Array[${data.length}]` : 'Object');
+                    
                     if (Array.isArray(data)) {
-                        for (const item of data) await importSoul(item);
+                        for (const item of data) {
+                            await importSoul(item);
+                        }
+                        toast(`${data.length} kayıt yüklendi`, 'success');
                     } else {
                         await importSoul(data);
+                        toast('1 kayıt yüklendi', 'success');
                     }
-                    toast('JSON yüklendi', 'success');
-                } else if (ext === 'sql') {
-                    // SQL insert statements parse
-                    const inserts = text.match(/INSERT INTO.*?VALUES\s*\([^)]+\)/gi) || [];
-                    for (const insert of inserts) {
-                        const values = insert.match(/\([^)]+\)/g);
-                        if (values && values[0]) {
-                            const cols = extractSQLValues(values[0]);
-                            await importSoul(cols);
+                } else if (file.name.endsWith('.sql')) {
+                    // SQL parse
+                    const lines = text.split('\n');
+                    let count = 0;
+                    
+                    for (const line of lines) {
+                        const match = line.match(/INSERT INTO.*?VALUES\s*\((.+)\)/i);
+                        if (match) {
+                            // Parse values
+                            const values = match[1].split(',').map(v => v.trim().replace(/^'|'$/g, ''));
+                            const soul = {
+                                discord_id: values[0] || '',
+                                name: values[1] || '',
+                                username: values[2] || '',
+                                email: values[3] || '',
+                                phone: values[4] || '',
+                                avatar_url: values[5] || '',
+                                notes: values[6] || ''
+                            };
+                            await importSoul(soul);
+                            count++;
                         }
                     }
-                    toast('SQL yüklendi', 'success');
+                    toast(`${count} SQL kayıt yüklendi`, 'success');
                 }
+                
                 loadList();
             } catch(e) {
+                console.error('File error:', e);
                 toast('Dosya okunamadı: ' + e.message, 'error');
             }
         }
 
-        function extractSQLValues(str) {
-            // Basit SQL parse
-            const cleaned = str.replace(/^\(|\)$/g, '').replace(/'/g, '');
-            const parts = cleaned.split(',').map(s => s.trim());
-            return {
-                discord_id: parts[0] || '',
-                name: parts[1] || '',
-                username: parts[2] || '',
-                email: parts[3] || '',
-                phone: parts[4] || '',
-                avatar_url: parts[5] || '',
-                notes: parts[6] || ''
-            };
-        }
-
         async function importSoul(data) {
-            if (!data.discord_id) return;
-            
+            if (!data || !data.discord_id) {
+                console.log('Invalid data, skipping');
+                return;
+            }
+
             const soul = {
-                discord_id: data.discord_id,
-                name: data.name || data.username || '',
-                username: data.username || '',
-                email: data.email || '',
-                phone: data.phone || '',
-                avatar_url: data.avatar_url || data.avatar_hash || '',
-                notes: data.notes || '',
-                created_at: new Date().toISOString()
+                discord_id: data.discord_id.toString(),
+                name: (data.name || data.username || '').toString(),
+                username: (data.username || '').toString(),
+                email: (data.email || '').toString(),
+                phone: (data.phone || '').toString(),
+                avatar_url: (data.avatar_url || data.avatar_hash || '').toString(),
+                notes: (data.notes || '').toString()
             };
 
-            if (useSQL) {
-                await db.from('souls').insert([soul]);
-            } else {
-                const souls = getSouls();
-                if (!souls.find(s => s.discord_id === soul.discord_id)) {
-                    soul.id = Date.now();
-                    souls.push(soul);
-                    setSouls(souls);
+            console.log('Importing:', soul.discord_id);
+
+            // SQL'e kaydet
+            if (useSQL && db) {
+                try {
+                    const { error } = await db.from('souls').insert([soul]);
+                    if (error && error.code !== '23505') { // 23505 = duplicate
+                        console.error('SQL insert error:', error);
+                    }
+                } catch(e) {
+                    console.error('SQL error:', e);
                 }
+            }
+
+            // Local'a da kaydet (backup)
+            const souls = getSouls();
+            if (!souls.find(s => s.discord_id === soul.discord_id)) {
+                soul.id = Date.now().toString();
+                soul.created_at = new Date().toISOString();
+                souls.push(soul);
+                setSouls(souls);
             }
         }
 
@@ -1174,32 +1029,57 @@
 
             if (!soul.discord_id) return toast('Discord ID gerekli', 'error');
 
-            if (useSQL) {
-                const { error } = await db.from('souls').insert([soul]);
-                if (error) return toast(error.message, 'error');
-            } else {
-                const souls = getSouls();
-                if (souls.find(s => s.discord_id === soul.discord_id)) {
-                    return toast('Bu ID zaten var', 'error');
+            // SQL
+            if (useSQL && db) {
+                try {
+                    const { error } = await db.from('souls').insert([soul]);
+                    if (error) {
+                        if (error.code === '23505') {
+                            return toast('Bu ID zaten var (SQL)', 'error');
+                        }
+                        console.error('SQL save error:', error);
+                    }
+                } catch(e) {
+                    console.error('Save error:', e);
                 }
-                soul.id = Date.now();
-                souls.push(soul);
-                setSouls(souls);
             }
+
+            // Local
+            const souls = getSouls();
+            if (souls.find(s => s.discord_id === soul.discord_id)) {
+                return toast('Bu ID zaten var (Local)', 'error');
+            }
+            
+            soul.id = Date.now().toString();
+            soul.created_at = new Date().toISOString();
+            souls.push(soul);
+            setSouls(souls);
 
             clearForm();
             loadList();
             toast('Kaydedildi', 'success');
         }
 
-        // List
+        // Load List
         async function loadList() {
             let souls = [];
-            
-            if (useSQL) {
-                const { data } = await db.from('souls').select('*').order('created_at', { ascending: false });
-                souls = data || [];
-            } else {
+
+            // SQL'den çek
+            if (useSQL && db) {
+                try {
+                    const { data, error } = await db.from('souls').select('*').order('created_at', { ascending: false });
+                    if (!error && data) {
+                        souls = data;
+                        // Local'ı sync et
+                        setSouls(souls);
+                    }
+                } catch(e) {
+                    console.error('Load error:', e);
+                }
+            }
+
+            // Local'dan çek (fallback)
+            if (souls.length === 0) {
                 souls = getSouls();
             }
 
@@ -1213,10 +1093,10 @@
                 <div class="soul-card">
                     <div class="soul-info">
                         <h4>${s.name || 'İsimsiz'}</h4>
-                        <small>${s.discord_id}</small>
+                        <small style="color: rgba(232,232,232,0.4);">${s.discord_id}</small>
                     </div>
-                    <div class="soul-actions">
-                        <button class="btn-icon" onclick="edit('${s.id}')">✎</button>
+                    <div>
+                        <button class="btn-icon" onclick="loadForEdit('${s.id}')">✎</button>
                         <button class="btn-icon delete" onclick="remove('${s.id}')">✕</button>
                     </div>
                 </div>
@@ -1225,21 +1105,27 @@
 
         async function remove(id) {
             if (!confirm('Silmek istediğinize emin misiniz?')) return;
-            
-            if (useSQL) {
-                await db.from('souls').delete().eq('id', id);
-            } else {
-                setSouls(getSouls().filter(s => s.id != id));
+
+            // SQL
+            if (useSQL && db) {
+                try {
+                    await db.from('souls').delete().eq('id', id);
+                } catch(e) {
+                    console.error('Delete error:', e);
+                }
             }
+
+            // Local
+            setSouls(getSouls().filter(s => s.id !== id));
             loadList();
             toast('Silindi', 'success');
         }
 
-        function edit(id) {
-            const souls = useSQL ? [] : getSouls(); // SQL'de edit için form doldur
-            const s = souls.find(x => x.id == id);
+        function loadForEdit(id) {
+            const souls = getSouls();
+            const s = souls.find(x => x.id === id);
             if (!s) return;
-            
+
             document.getElementById('newId').value = s.discord_id;
             document.getElementById('newName').value = s.name || '';
             document.getElementById('newUser').value = s.username || '';
@@ -1247,15 +1133,19 @@
             document.getElementById('newPhone').value = s.phone || '';
             document.getElementById('newAvatar').value = s.avatar_url || '';
             document.getElementById('newNotes').value = s.notes || '';
-            
+
             remove(id);
             toast('Düzenleme için yüklendi', 'success');
         }
 
         function clearForm() {
-            ['newId','newName','newUser','newEmail','newPhone','newAvatar','newNotes'].forEach(id => {
-                document.getElementById(id).value = '';
-            });
+            document.getElementById('newId').value = '';
+            document.getElementById('newName').value = '';
+            document.getElementById('newUser').value = '';
+            document.getElementById('newEmail').value = '';
+            document.getElementById('newPhone').value = '';
+            document.getElementById('newAvatar').value = '';
+            document.getElementById('newNotes').value = '';
         }
 
         function toast(msg, type) {
@@ -1266,13 +1156,16 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        // Enter key
+        // Enter keys
         document.getElementById('searchInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') search();
         });
         document.getElementById('gatePass').addEventListener('keypress', e => {
             if (e.key === 'Enter') enter();
         });
+
+        // Init
+        initDB();
     </script>
 </body>
 </html>

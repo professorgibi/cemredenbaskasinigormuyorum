@@ -425,6 +425,23 @@
             display: none;
         }
 
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
         .creation-form {
             background: var(--panel);
             border: 1px solid rgba(212, 175, 55, 0.15);
@@ -552,17 +569,29 @@
             border-color: #e74c3c;
         }
 
-        .debug-info {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--gold);
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px 0;
-            font-family: monospace;
-            font-size: 0.8rem;
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
             color: var(--gold);
-            max-height: 100px;
-            overflow-y: auto;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(232,232,232,0.5);
         }
 
         .hidden { display: none !important; }
@@ -650,8 +679,21 @@
                 </div>
 
                 <div id="sanctum" class="sanctum">
-                    <!-- Debug Info -->
-                    <div id="debugInfo" class="debug-info hidden"></div>
+                    <!-- Stats -->
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-number" id="statTotal">0</div>
+                            <div class="stat-label">Toplam</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="statSQL">0</div>
+                            <div class="stat-label">SQL</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="statLocal">0</div>
+                            <div class="stat-label">Local</div>
+                        </div>
+                    </div>
 
                     <!-- File Upload -->
                     <div class="upload-zone" id="dropZone">
@@ -659,6 +701,9 @@
                         <div class="upload-text">Kutsal Yazı Yükle</div>
                         <div style="color: rgba(232,232,232,0.4); font-size: 0.9rem; margin-top: 8px;">
                             JSON veya SQL dosyasını sürükleyin veya tıklayın
+                        </div>
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
                         </div>
                         <input type="file" class="file-input" id="fileIn" accept=".json,.sql">
                     </div>
@@ -713,14 +758,6 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // Debug log
-        function debug(msg) {
-            console.log(msg);
-            const el = document.getElementById('debugInfo');
-            el.classList.remove('hidden');
-            el.innerHTML += msg + '<br>';
-        }
-
         // ===== SUPABASE CONFIG =====
         const SUPABASE_URL = 'https://shpflhdeswhotrctzmqj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocGZsaGRlc3dob3RyY3R6bXFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjExNzIsImV4cCI6MjA4OTU5NzE3Mn0.YFWgiqX7K6iMQ7HFdjDmHD5E1ouhFhRArqni0LBnMmA';
@@ -731,28 +768,26 @@
         async function initDB() {
             try {
                 if (SUPABASE_URL.includes('YOUR_') || SUPABASE_KEY.includes('YOUR_')) {
-                    debug('Local mode - Supabase bilgileri girilmemiş');
+                    console.log('Local mode');
                     return;
                 }
                 
                 const { createClient } = supabase;
                 db = createClient(SUPABASE_URL, SUPABASE_KEY);
                 
-                const { data, error } = await db.from('souls').select('count').limit(1);
+                const { error } = await db.from('souls').select('count').limit(1);
                 
                 if (!error) {
                     useSQL = true;
-                    debug('✓ SQL Connected');
-                } else {
-                    debug('✗ SQL Error: ' + error.message);
+                    console.log('SQL Connected');
                 }
             } catch(e) {
-                debug('✗ Connection failed: ' + e.message);
+                console.log('Local mode:', e.message);
             }
         }
 
         // Local storage
-        const KEY = 'divine_souls_v2';
+        const KEY = 'divine_souls_v3';
         const getSouls = () => JSON.parse(localStorage.getItem(KEY) || '[]');
         const setSouls = (d) => localStorage.setItem(KEY, JSON.stringify(d));
 
@@ -776,9 +811,7 @@
                 try {
                     const { data, error } = await db.from('souls').select('*').eq('discord_id', id).single();
                     if (!error && data) soul = data;
-                } catch(e) {
-                    debug('Search error: ' + e.message);
-                }
+                } catch(e) {}
             }
             
             if (!soul) {
@@ -811,6 +844,7 @@
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('sanctum').classList.add('revealed');
                 loadList();
+                updateStats();
                 toast('Hoş geldiniz', 'success');
             } else {
                 toast('Yanlış şifre', 'error');
@@ -823,18 +857,24 @@
             document.getElementById('gatePass').value = '';
         }
 
+        function updateStats() {
+            const local = getSouls();
+            document.getElementById('statTotal').textContent = local.length;
+            document.getElementById('statLocal').textContent = local.length;
+            document.getElementById('statSQL').textContent = useSQL ? '✓' : '✗';
+        }
+
         // ===== FILE UPLOAD =====
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileIn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
 
         dropZone.addEventListener('click', (e) => {
-            if (e.target !== fileInput) {
-                fileInput.click();
-            }
+            if (e.target !== fileInput) fileInput.click();
         });
 
         fileInput.addEventListener('change', (e) => {
-            debug('File selected: ' + (e.target.files[0]?.name || 'none'));
             if (e.target.files && e.target.files[0]) {
                 handleFile(e.target.files[0]);
             }
@@ -858,77 +898,119 @@
         });
 
         dropZone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            debug('Dropped file: ' + (files[0]?.name || 'none'));
-            if (files && files[0]) {
-                handleFile(files[0]);
-            }
+            const files = e.dataTransfer.files;
+            if (files && files[0]) handleFile(files[0]);
         });
 
         async function handleFile(file) {
-            debug('Processing: ' + file.name);
-            
             if (!file.name.match(/\.(json|sql)$/i)) {
                 return toast('Sadece .json veya .sql dosyası', 'error');
             }
 
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+
             try {
                 const text = await file.text();
-                debug('File size: ' + text.length + ' chars');
-                debug('First 100 chars: ' + text.substring(0, 100).replace(/\n/g, ' '));
+                
+                // İlk 5000 karakteri atla (garbage data)
+                let cleanText = text;
+                const insertIndex = text.indexOf('INSERT INTO');
+                
+                if (insertIndex > 0) {
+                    cleanText = text.substring(insertIndex);
+                    console.log('Garbage skipped, starting at:', insertIndex);
+                }
+
+                progressFill.style.width = '30%';
 
                 let count = 0;
+                const batchSize = 100;
+                let batch = [];
 
                 if (file.name.endsWith('.json')) {
-                    const data = JSON.parse(text);
-                    debug('JSON type: ' + (Array.isArray(data) ? 'Array[' + data.length + ']' : typeof data));
+                    const data = JSON.parse(cleanText);
+                    const items = Array.isArray(data) ? data : [data];
                     
-                    if (Array.isArray(data)) {
-                        for (const item of data) {
-                            if (await importSoul(item)) count++;
-                        }
-                    } else if (typeof data === 'object' && data !== null) {
-                        if (await importSoul(data)) count++;
-                    }
-                    toast(`${count} kayıt yüklendi`, 'success');
-                    
-                } else if (file.name.endsWith('.sql')) {
-                    // Düzeltilmiş SQL parse
-                    const lines = text.split('\n');
-                    debug('SQL lines: ' + lines.length);
-                    
-                    for (const line of lines) {
-                        const trimmed = line.trim();
-                        if (!trimmed || trimmed.startsWith('--') || trimmed.startsWith('/*')) continue;
+                    for (let i = 0; i < items.length; i++) {
+                        batch.push(items[i]);
                         
-                        // INSERT INTO ... VALUES (...) parse
-                        const valuesMatch = trimmed.match(/VALUES\s*\((.+)\)/i);
-                        if (valuesMatch) {
-                            debug('Found VALUES: ' + valuesMatch[1].substring(0, 50));
+                        if (batch.length >= batchSize || i === items.length - 1) {
+                            for (const item of batch) {
+                                if (await importSoul(item)) count++;
+                            }
+                            batch = [];
                             
-                            // Parantez içindeki değerleri parse et
-                            const valuesStr = valuesMatch[1];
-                            const values = parseSQLValues(valuesStr);
+                            const progress = 30 + ((i / items.length) * 70);
+                            progressFill.style.width = progress + '%';
                             
-                            debug('Parsed: ' + JSON.stringify(values));
-                            
-                            if (values.discord_id) {
-                                if (await importSoul(values)) count++;
+                            // UI'ı güncelle
+                            if (i % 500 === 0) {
+                                toast(`${count} kayıt işlendi...`, 'success');
+                                loadList();
+                                await new Promise(r => setTimeout(r, 10));
                             }
                         }
                     }
-                    toast(`${count} SQL kayıt yüklendi`, 'success');
+                } else if (file.name.endsWith('.sql')) {
+                    // SQL dosyasını satır satır işle
+                    const lines = cleanText.split('\n');
+                    const totalLines = lines.length;
+                    
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        
+                        // INSERT satırını bul
+                        if (line.toUpperCase().startsWith('INSERT INTO')) {
+                            // VALUES kısmını bul
+                            const valuesMatch = line.match(/VALUES\s*\((.+)\)/i);
+                            
+                            if (valuesMatch) {
+                                const values = parseSQLValues(valuesMatch[1]);
+                                if (values.discord_id) {
+                                    batch.push(values);
+                                }
+                            }
+                        }
+                        
+                        // Batch dolunca işle
+                        if (batch.length >= batchSize || i === totalLines - 1) {
+                            for (const item of batch) {
+                                if (await importSoul(item)) count++;
+                            }
+                            batch = [];
+                            
+                            const progress = 30 + ((i / totalLines) * 70);
+                            progressFill.style.width = progress + '%';
+                            
+                            // Her 1000 satırda UI güncelle
+                            if (i % 1000 === 0) {
+                                loadList();
+                                await new Promise(r => setTimeout(r, 1));
+                            }
+                        }
+                    }
                 }
-                
+
+                progressFill.style.width = '100%';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 500);
+
+                toast(`${count} kayıt yüklendi`, 'success');
                 loadList();
+                updateStats();
+                
             } catch(e) {
-                debug('ERROR: ' + e.message);
-                toast('Dosya okunamadı: ' + e.message, 'error');
+                progressBar.style.display = 'none';
+                console.error(e);
+                toast('Hata: ' + e.message, 'error');
             }
         }
 
         function parseSQLValues(str) {
+            // Basit ama sağlam parser
             const values = [];
             let current = '';
             let inQuote = false;
@@ -941,14 +1023,15 @@
                     inQuote = true;
                     quoteChar = char;
                 } else if (inQuote && char === quoteChar) {
-                    // Escape check
-                    if (str[i-1] === '\\') {
-                        current += char;
-                    } else {
+                    // Check escape
+                    if (str[i - 1] !== '\\') {
                         inQuote = false;
                         quoteChar = null;
+                    } else {
+                        current += char;
                     }
-                } else if (!inQuote && char === ',') {
+                } else if (!inQuote && char === ',' && !current.trim().match(/^\d+$/)) {
+                    // Virgülle ayır ama sayıların içindeki virgüllere dikkat et
                     values.push(current.trim());
                     current = '';
                 } else {
@@ -957,29 +1040,35 @@
             }
             values.push(current.trim());
             
-            // Temizle ve ata
-            const clean = (v) => v.replace(/^['"]|['"]$/g, '').trim() || '';
+            // Temizle
+            const clean = (v) => {
+                v = v.trim();
+                // Tırnakları kaldır
+                if ((v.startsWith("'") && v.endsWith("'")) || (v.startsWith('"') && v.endsWith('"'))) {
+                    v = v.slice(1, -1);
+                }
+                // NULL kontrolü
+                if (v.toUpperCase() === 'NULL') return '';
+                return v;
+            };
             
             return {
-                discord_id: clean(values[0] || ''),
-                name: clean(values[1] || ''),
-                username: clean(values[2] || ''),
-                email: clean(values[3] || ''),
-                phone: clean(values[4] || ''),
-                avatar_url: clean(values[5] || ''),
-                notes: clean(values[6] || '')
+                discord_id: clean(values[0]),
+                name: clean(values[1]),
+                username: clean(values[2]),
+                email: clean(values[3]),
+                phone: clean(values[4]),
+                avatar_url: clean(values[5]),
+                notes: clean(values[6])
             };
         }
 
         async function importSoul(data) {
-            if (!data || !data.discord_id) {
-                debug('Skip: no discord_id');
-                return false;
-            }
+            if (!data || !data.discord_id) return false;
 
             const soul = {
                 discord_id: String(data.discord_id).trim(),
-                name: String(data.name || data.username || '').trim(),
+                name: String(data.name || '').trim(),
                 username: String(data.username || '').trim(),
                 email: String(data.email || '').trim(),
                 phone: String(data.phone || '').trim(),
@@ -987,44 +1076,26 @@
                 notes: String(data.notes || '').trim()
             };
 
-            if (!soul.discord_id) {
-                debug('Skip: empty discord_id after trim');
-                return false;
-            }
+            if (!soul.discord_id || soul.discord_id === '') return false;
 
-            debug('Importing: ' + soul.discord_id);
-
-            // SQL
+            // SQL'e kaydet
             if (useSQL && db) {
                 try {
-                    const { error } = await db.from('souls').insert([soul]);
-                    if (error) {
-                        if (error.code === '23505') {
-                            debug('Duplicate (SQL): ' + soul.discord_id);
-                        } else {
-                            debug('SQL error: ' + error.message);
-                        }
-                    } else {
-                        debug('Saved to SQL: ' + soul.discord_id);
-                    }
-                } catch(e) {
-                    debug('SQL exception: ' + e.message);
-                }
+                    await db.from('souls').insert([soul]);
+                } catch(e) {}
             }
 
-            // Local
+            // Local'a kaydet
             const souls = getSouls();
             if (!souls.find(s => s.discord_id === soul.discord_id)) {
-                soul.id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+                soul.id = Date.now().toString() + Math.random().toString(36).substr(2, 5);
                 soul.created_at = new Date().toISOString();
                 souls.push(soul);
                 setSouls(souls);
-                debug('Saved to Local: ' + soul.discord_id);
                 return true;
-            } else {
-                debug('Duplicate (Local): ' + soul.discord_id);
-                return false;
             }
+            
+            return false;
         }
 
         async function save() {
@@ -1043,6 +1114,7 @@
             if (await importSoul(soul)) {
                 clearForm();
                 loadList();
+                updateStats();
                 toast('Kaydedildi', 'success');
             } else {
                 toast('Bu ID zaten var', 'error');
@@ -1050,22 +1122,17 @@
         }
 
         async function loadList() {
-            let souls = [];
-
+            let souls = getSouls();
+            
+            // SQL'den çek ve sync et
             if (useSQL && db) {
                 try {
-                    const { data, error } = await db.from('souls').select('*').order('created_at', { ascending: false });
-                    if (!error && data) {
+                    const { data } = await db.from('souls').select('*').order('created_at', { ascending: false });
+                    if (data && data.length > souls.length) {
                         souls = data;
                         setSouls(souls);
                     }
-                } catch(e) {
-                    debug('Load error: ' + e.message);
-                }
-            }
-
-            if (souls.length === 0) {
-                souls = getSouls();
+                } catch(e) {}
             }
 
             const container = document.getElementById('list');
@@ -1074,7 +1141,10 @@
                 return;
             }
 
-            container.innerHTML = souls.map(s => `
+            // Sadece son 50 kaydı göster (performans için)
+            const displaySouls = souls.slice(0, 50);
+            
+            container.innerHTML = displaySouls.map(s => `
                 <div class="soul-card">
                     <div class="soul-info">
                         <h4>${s.name || 'İsimsiz'}</h4>
@@ -1086,6 +1156,10 @@
                     </div>
                 </div>
             `).join('');
+            
+            if (souls.length > 50) {
+                container.innerHTML += `<p style="text-align:center;color:rgba(232,232,232,0.3);padding:10px;">... ve ${souls.length - 50} kayıt daha</p>`;
+            }
         }
 
         async function remove(id) {
@@ -1094,13 +1168,12 @@
             if (useSQL && db) {
                 try {
                     await db.from('souls').delete().eq('id', id);
-                } catch(e) {
-                    debug('Delete error: ' + e.message);
-                }
+                } catch(e) {}
             }
 
             setSouls(getSouls().filter(s => s.id !== id));
             loadList();
+            updateStats();
             toast('Silindi', 'success');
         }
 

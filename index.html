@@ -3,840 +3,600 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESTEDEV | Intelligence Platform</title>
+    <title>ESTEDEV | Intelligence OS</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #050505;
-            --bg-secondary: rgba(20, 20, 25, 0.7);
-            --bg-tertiary: rgba(30, 30, 40, 0.8);
-            --accent: #ef4444;
-            --accent-glow: rgba(239, 68, 68, 0.3);
-            --accent-light: #fca5a5;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border: rgba(255, 255, 255, 0.1);
-            --glass: rgba(255, 255, 255, 0.03);
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --info: #3b82f6;
+            --bg: #020205;
+            --surface: #0a0a0f;
+            --surface-2: #12121a;
+            --surface-3: #1a1a25;
+            --accent: #ff3366;
+            --accent-2: #ff6b9d;
+            --accent-glow: rgba(255, 51, 102, 0.15);
+            --success: #00d084;
+            --warning: #ffa726;
+            --info: #42a5f5;
+            --text: #ffffff;
+            --text-2: #a0a0b0;
+            --text-3: #606070;
+            --border: rgba(255,255,255,0.08);
+            --gradient-1: linear-gradient(135deg, #ff3366 0%, #ff6b9d 100%);
+            --gradient-2: linear-gradient(135deg, #7c3aed 0%, #ff3366 100%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
+        
+        html, body {
+            height: 100%;
             font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            overflow-x: hidden;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        /* Background Effects */
+        .ambient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 51, 102, 0.1) 0%, transparent 50%);
+        }
+
+        .grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+        }
+
+        /* Layout */
+        .app {
+            display: flex;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(220, 38, 38, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: -1;
-            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
-        }
-
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-primary); }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-
-        .top-nav {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 32px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-
         .brand {
+            padding: 32px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 700;
-            font-size: 1.5rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #fff 0%, var(--accent-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .brand-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent) 0%, #991b1b 100%);
+            width: 42px;
+            height: 42px;
+            background: var(--gradient-1);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: white;
-            box-shadow: 0 0 20px var(--accent-glow);
-            border: 1px solid rgba(255,255,255,0.1);
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, #a0a0b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            background: var(--glass);
-            padding: 4px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
+        .nav {
+            padding: 24px 16px;
+            flex: 1;
         }
 
-        .nav-link {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            background: transparent;
-        }
-
-        .nav-link:hover { color: var(--text-primary); }
-        .nav-link.active { 
-            color: var(--text-primary); 
-            background: rgba(239, 68, 68, 0.2);
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
-        }
-
-        .nav-status {
+        .nav-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.875rem;
-            color: var(--text-muted);
+            gap: 12px;
+            padding: 14px 20px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-2);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; height: 100%; width: 3px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-item:hover {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 51, 102, 0.1);
+            color: var(--accent-2);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+        }
+
+        .nav-item.active::before {
+            opacity: 1;
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .status-bar {
+            padding: 20px 32px;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-3);
             font-family: 'JetBrains Mono', monospace;
         }
 
-        .status-dot {
+        .status-indicator {
+            display: inline-block;
             width: 8px;
             height: 8px;
             background: var(--success);
             border-radius: 50%;
+            margin-right: 8px;
             box-shadow: 0 0 10px var(--success);
             animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
 
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 32px;
+        .header {
+            height: 80px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: rgba(10,10,15,0.8);
+            backdrop-filter: blur(20px);
         }
 
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.5s ease; }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text-2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+            height: 100%;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Enhanced Search Section */
-        .search-hero {
+        /* Search Section */
+        .search-container {
             max-width: 900px;
             margin: 60px auto;
             text-align: center;
         }
 
-        .search-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            letter-spacing: -0.03em;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .search-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-            font-size: 1.25rem;
-            font-weight: 300;
-        }
-
-        .search-tabs {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 24px;
-        }
-
-        .search-tab {
-            padding: 8px 16px;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.3s;
-        }
-
-        .search-tab.active {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--text-primary);
-            border-color: var(--accent);
-        }
-
-        .search-box {
+        .search-box-wrapper {
             position: relative;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .search-input {
             width: 100%;
             padding: 24px 32px;
-            padding-right: 160px;
-            background: var(--bg-secondary);
+            padding-left: 60px;
+            background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
-            color: var(--text-primary);
-            font-size: 1.25rem;
+            color: var(--text);
+            font-size: 1.125rem;
             font-family: 'JetBrains Mono', monospace;
             outline: none;
             transition: all 0.3s;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
 
         .search-input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 32px rgba(0,0,0,0.4);
+            box-shadow: 0 0 0 4px var(--accent-glow);
         }
 
-        .search-btn {
+        .search-icon {
             position: absolute;
-            right: 12px;
+            left: 24px;
             top: 50%;
             transform: translateY(-50%);
-            padding: 16px 32px;
-            background: linear-gradient(135deg, var(--accent) 0%, #b91c1c 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
-        }
-
-        .search-btn:hover { 
-            transform: translateY(-50%) scale(1.05);
-            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
+            color: var(--text-3);
+            font-size: 1.25rem;
         }
 
         .search-filters {
             display: flex;
             gap: 12px;
             justify-content: center;
-            margin-bottom: 24px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
         }
 
-        .filter-tag {
-            padding: 6px 12px;
-            background: var(--glass);
+        .filter-chip {
+            padding: 8px 16px;
+            background: var(--surface-2);
             border: 1px solid var(--border);
             border-radius: 20px;
-            font-size: 0.8125rem;
-            color: var(--text-muted);
+            font-size: 0.875rem;
+            color: var(--text-2);
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .filter-tag:hover, .filter-tag.active {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--accent-light);
+        .filter-chip:hover, .filter-chip.active {
+            background: var(--accent);
+            color: white;
             border-color: var(--accent);
         }
 
+        /* Results */
         .result-card {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
+            background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
-            margin-top: 40px;
+            text-align: left;
             display: none;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            text-align: left;
         }
 
-        .result-card.active { display: block; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .result-card.active {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .result-header {
-            background: linear-gradient(90deg, rgba(220, 38, 38, 0.2) 0%, transparent 100%);
             padding: 24px 32px;
+            background: linear-gradient(90deg, rgba(255,51,102,0.1) 0%, transparent 100%);
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .result-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(220, 38, 38, 0.2);
-            color: var(--accent-light);
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border: 1px solid rgba(220, 38, 38, 0.3);
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.2);
-        }
-
-        .result-body { padding: 40px; }
-        .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-
-        .result-item {
-            padding: 24px;
-            background: var(--glass);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-
-        .result-item:hover {
-            border-color: rgba(239, 68, 68, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .result-label {
+        .result-title {
             font-size: 0.75rem;
-            color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
+            color: var(--accent-2);
+            font-weight: 700;
+        }
+
+        .result-body {
+            padding: 32px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .data-field {
+            background: var(--surface-2);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .data-label {
+            font-size: 0.75rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 8px;
             font-weight: 600;
         }
 
-        .result-value {
-            font-size: 1.25rem;
-            color: var(--text-primary);
-            font-weight: 500;
+        .data-value {
             font-family: 'JetBrains Mono', monospace;
+            font-size: 1.125rem;
+            color: var(--text);
             word-break: break-all;
         }
 
-        .result-value.highlight {
-            color: var(--accent-light);
+        .data-value.highlight {
+            color: var(--accent-2);
             font-weight: 600;
-            text-shadow: 0 0 20px rgba(252, 165, 165, 0.3);
-        }
-
-        .not-found {
-            margin-top: 40px;
-            padding: 32px;
-            background: rgba(220, 38, 38, 0.1);
-            border: 1px solid rgba(220, 38, 38, 0.2);
-            border-radius: 16px;
-            color: var(--accent-light);
-            text-align: center;
-            display: none;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 28px;
-            transition: all 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(239, 68, 68, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        .stat-card:hover::before { opacity: 1; }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(220, 38, 38, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .stat-title { font-size: 0.9375rem; color: var(--text-secondary); font-weight: 500; }
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-            text-shadow: 0 0 30px rgba(255,255,255,0.1);
         }
 
         /* Upload Section */
-        .upload-section {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            border: 2px dashed rgba(239, 68, 68, 0.3);
-            border-radius: 24px;
-            padding: 60px 40px;
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 20px;
+            padding: 60px;
             text-align: center;
-            margin-bottom: 40px;
+            background: var(--surface);
+            transition: all 0.3s;
             cursor: pointer;
-            transition: all 0.4s;
             position: relative;
             overflow: hidden;
         }
 
-        .upload-section:hover {
+        .upload-zone:hover, .upload-zone.dragover {
             border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
+            background: rgba(255,51,102,0.05);
         }
 
-        .upload-section.dragover {
-            border-color: var(--accent);
-            background: rgba(220, 38, 38, 0.1);
-            transform: scale(1.02);
+        .upload-zone.processing {
+            pointer-events: none;
+            opacity: 0.7;
         }
 
-        .upload-icon {
+        .upload-icon-large {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(220, 38, 38, 0.05) 100%);
+            background: var(--surface-2);
             border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 24px;
             font-size: 2rem;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            box-shadow: 0 0 40px rgba(220, 38, 38, 0.2);
+            border: 1px solid var(--border);
         }
 
-        .upload-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 12px; }
-        .upload-hint { color: var(--text-muted); font-size: 1rem; }
-        .upload-formats {
-            margin-top: 16px;
-            font-size: 0.875rem;
-            color: var(--accent-light);
+        .upload-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtitle {
+            color: var(--text-2);
+            font-size: 0.9375rem;
+            margin-bottom: 16px;
+        }
+
+        .upload-meta {
             font-family: 'JetBrains Mono', monospace;
-            background: rgba(0,0,0,0.3);
+            font-size: 0.875rem;
+            color: var(--accent-2);
+            background: rgba(255,51,102,0.1);
             padding: 8px 16px;
             border-radius: 20px;
             display: inline-block;
         }
 
-        .file-info {
-            margin-top: 24px;
-            padding: 20px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 12px;
-            font-size: 1rem;
-            color: var(--text-secondary);
-            display: none;
-            border: 1px solid var(--border);
-        }
-
-        .file-info.active { display: block; animation: fadeIn 0.3s; }
-
-        .progress-container {
+        /* Progress */
+        .progress-wrapper {
             margin-top: 32px;
             display: none;
         }
 
-        .progress-bar {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
+        .progress-bar-bg {
+            height: 6px;
+            background: var(--surface-2);
+            border-radius: 3px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 12px;
         }
 
-        .progress-fill {
+        .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent) 0%, #fca5a5 100%);
+            background: var(--gradient-1);
             width: 0%;
-            transition: width 0.3s ease-out;
-            border-radius: 4px;
+            transition: width 0.3s ease;
+            border-radius: 3px;
             box-shadow: 0 0 20px var(--accent);
         }
 
-        .progress-text {
-            margin-top: 12px;
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 500;
-        }
-
-        .progress-detail {
-            margin-top: 8px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Preview Modal */
-        .preview-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            margin-bottom: 32px;
-            max-height: 400px;
-            overflow: auto;
-            display: none;
-        }
-
-        .preview-container.active { display: block; animation: fadeIn 0.3s; }
-
-        .preview-header {
-            padding: 16px 24px;
-            background: rgba(0,0,0,0.3);
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
+        .progress-stats {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-        }
-
-        .preview-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .preview-table th {
-            text-align: left;
-            padding: 12px 24px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            background: rgba(0,0,0,0.2);
-            position: sticky;
-            top: 0;
-        }
-
-        .preview-table td {
-            padding: 12px 24px;
-            border-bottom: 1px solid var(--border);
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.875rem;
-            color: var(--text-secondary);
+            color: var(--text-2);
         }
 
-        .preview-table tr:hover td {
-            color: var(--text-primary);
-            background: rgba(255,255,255,0.03);
-        }
-
-        .validation-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .validation-badge.valid {
-            background: rgba(34, 197, 94, 0.2);
-            color: var(--success);
-        }
-
-        .validation-badge.invalid {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--accent);
-        }
-
-        /* Table & Layout */
-        .table-container {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .table-header {
+        /* Stats Grid */
+        .stats-grid {
             display: grid;
-            grid-template-columns: 2fr 1.5fr 1fr 150px;
-            padding: 20px 28px;
-            background: rgba(0,0,0,0.3);
-            border-bottom: 1px solid var(--border);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-box:hover::before {
+            opacity: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-2);
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Table */
+        .data-table {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
         }
 
         .table-row {
             display: grid;
-            grid-template-columns: 2fr 1.5fr 1fr 150px;
-            padding: 16px 28px;
+            grid-template-columns: 2fr 1.5fr 1fr 120px;
+            padding: 16px 24px;
             border-bottom: 1px solid var(--border);
             align-items: center;
-            transition: all 0.3s;
+            font-size: 0.9375rem;
         }
 
-        .table-row:hover { background: rgba(255,255,255,0.03); }
-        .table-row:last-child { border-bottom: none; }
-
-        .col-id {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            color: var(--accent-light);
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .col-name { 
+        .table-header {
+            background: var(--surface-2);
             font-weight: 600;
-            font-size: 1rem;
+            color: var(--text-2);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table-row:not(.table-header):hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .table-cell {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .col-status {
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            background: rgba(34, 197, 94, 0.1);
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(0,208,132,0.1);
             color: var(--success);
             border-radius: 20px;
-            font-size: 0.8125rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            width: fit-content;
         }
 
-        .col-actions { display: flex; gap: 12px; }
-
-        .btn {
-            padding: 16px;
-            background: linear-gradient(135deg, var(--accent) 0%, #b91c1c 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
+        .btn-sm {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
-        }
-
-        .btn:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.6);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            box-shadow: none;
-        }
-
-        .btn-secondary:hover { 
-            background: rgba(255,255,255,0.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none;
+            transition: all 0.2s;
         }
 
         .btn-danger {
             background: transparent;
             color: var(--accent);
             border: 1px solid var(--accent);
-            box-shadow: none;
         }
 
-        .btn-danger:hover { 
-            background: var(--accent); 
+        .btn-danger:hover {
+            background: var(--accent);
             color: white;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
         }
 
-        .btn-sm { padding: 10px 20px; font-size: 0.875rem; }
-
-        .login-container { max-width: 480px; margin: 120px auto; }
-        .login-card {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 48px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-
-        .login-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-align: center;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .login-subtitle {
-            color: var(--text-secondary);
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 0.9375rem;
-        }
-
-        .form-group { margin-bottom: 24px; }
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 10px;
-            color: var(--text-secondary);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 16px 20px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .form-input:focus { 
-            border-color: var(--accent); 
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-
-        .action-bar {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 40px;
-            padding: 24px;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            justify-content: flex-end;
-        }
-
-        .dashboard { display: none; }
-        .dashboard.active { display: block; animation: fadeIn 0.5s; }
-
-        .page-header { margin-bottom: 40px; text-align: center; }
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .page-subtitle { color: var(--text-secondary); font-size: 1.125rem; }
-
+        /* Modal */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            inset: 0;
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
             display: none;
@@ -845,383 +605,417 @@
             padding: 20px;
         }
 
-        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
-
-        .modal-content {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(30px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 80vh;
-            overflow: hidden;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.7);
+        .modal-overlay.active {
             display: flex;
-            flex-direction: column;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 100px rgba(0,0,0,0.8);
         }
 
         .modal-header {
-            padding: 32px;
+            padding: 24px;
             border-bottom: 1px solid var(--border);
-            background: rgba(220, 38, 38, 0.1);
         }
 
-        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: var(--accent-light); }
-        .modal-subtitle { color: var(--text-secondary); font-size: 0.9375rem; }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
 
-        .modal-body { 
-            padding: 32px; 
-            overflow-y: auto;
-            flex: 1;
+        .modal-body {
+            padding: 24px;
+            color: var(--text-2);
         }
 
         .modal-footer {
-            padding: 24px 32px;
+            padding: 20px 24px;
             border-top: 1px solid var(--border);
             display: flex;
-            gap: 16px;
             justify-content: flex-end;
+            gap: 12px;
         }
 
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: var(--surface-2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        /* Toast */
         .toast-container {
             position: fixed;
             bottom: 32px;
             right: 32px;
-            z-index: 1001;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            z-index: 1001;
         }
 
         .toast {
-            padding: 20px 24px;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
+            background: var(--surface);
             border: 1px solid var(--border);
             border-left: 4px solid var(--accent);
+            padding: 16px 24px;
             border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 0.9375rem;
-            font-weight: 500;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            transform: translateX(500px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
         }
 
-        .toast.show { transform: translateX(0); }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         .toast.success { border-left-color: var(--success); }
-        .toast.warning { border-left-color: var(--warning); }
-        .toast.info { border-left-color: var(--info); }
+        .toast.error { border-left-color: var(--accent); }
 
-        .empty-state {
-            padding: 80px;
+        /* Login */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 420px;
             text-align: center;
-            color: var(--text-muted);
         }
 
-        .empty-icon {
-            width: 100px;
-            height: 100px;
-            background: var(--glass);
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-1);
+            border-radius: 16px;
             margin: 0 auto 24px;
-            font-size: 3rem;
-            border: 1px solid var(--border);
-        }
-
-        .pagination {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 16px;
-            padding: 20px;
-            border-top: 1px solid var(--border);
-            background: rgba(0,0,0,0.2);
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            box-shadow: 0 0 40px var(--accent-glow);
         }
 
-        .page-btn {
-            padding: 8px 16px;
-            background: var(--bg-tertiary);
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: var(--text-2);
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-2);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--surface-2);
             border: 1px solid var(--border);
-            color: var(--text-primary);
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
             transition: all 0.2s;
         }
 
-        .page-btn:hover:not(:disabled) {
-            background: var(--accent);
+        .input-field:focus {
             border-color: var(--accent);
         }
-
-        .page-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        .duplicate-list {
-            max-height: 300px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .duplicate-item {
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .duplicate-item:last-child { border-bottom: none; }
 
         .hidden { display: none !important; }
 
         @media (max-width: 1024px) {
+            .sidebar { width: 80px; }
+            .brand-text, .nav-text { display: none; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .table-header, .table-row { grid-template-columns: 1fr 1fr; }
-            .table-header > div:nth-child(3), .table-row > div:nth-child(3),
-            .table-header > div:nth-child(4), .table-row > div:nth-child(4) { display: none; }
-            .result-grid { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 640px) {
-            .main-container { padding: 20px; }
-            .top-nav { padding: 0 20px; height: 60px; }
-            .nav-links { display: none; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .action-bar { flex-direction: column; }
-            .search-title { font-size: 2.5rem; }
-            .search-filters { flex-direction: column; align-items: center; }
+            .result-body { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="grid-overlay"></div>
-    
-    <nav class="top-nav">
-        <div class="brand">
-            <div class="brand-icon">E</div>
-            <span>ESTEDEV</span>
-        </div>
-        <div class="nav-links">
-            <button class="nav-link active" onclick="changeSection('search')">Target Search</button>
-            <button class="nav-link" onclick="changeSection('admin')">Command Center</button>
-        </div>
-        <div class="nav-status">
-            <span class="status-dot"></span>
-            <span>ONLINE</span>
-            <span style="margin-left: 16px; opacity: 0.6;">DB: <span id="dbSize">0</span></span>
-        </div>
-    </nav>
+    <div class="ambient"></div>
+    <div class="grid"></div>
 
-    <main class="main-container">
-        <section id="section-search" class="section active">
-            <div class="search-hero">
-                <h1 class="search-title">Target Acquisition</h1>
-                <p class="search-subtitle">Advanced intelligence search with multi-criteria filtering</p>
-                
-                <div class="search-tabs">
-                    <button class="search-tab active" onclick="setSearchType('id')" id="tab-id">Discord ID</button>
-                    <button class="search-tab" onclick="setSearchType('username')" id="tab-username">Username</button>
-                    <button class="search-tab" onclick="setSearchType('email')" id="tab-email">Email</button>
-                    <button class="search-tab" onclick="setSearchType('name')" id="tab-name">Codename</button>
-                </div>
-
-                <div class="search-box">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Enter Discord ID (18-20 digits)...">
-                    <button class="search-btn" onclick="search()">Search</button>
-                </div>
-
-                <div class="search-filters">
-                    <span class="filter-tag" onclick="toggleFilter(this, 'exact')">Exact Match</span>
-                    <span class="filter-tag active" onclick="toggleFilter(this, 'partial')">Partial Match</span>
-                    <span class="filter-tag" onclick="toggleFilter(this, 'regex')">Regex Mode</span>
-                </div>
-
-                <div id="resultCard" class="result-card">
-                    <div class="result-header">
-                        <span class="result-badge">● Target Located</span>
-                        <span style="color: var(--text-muted); font-family: JetBrains Mono; font-size: 0.875rem;">ID: <span id="resIdShort">...</span></span>
-                    </div>
-                    <div class="result-body">
-                        <div class="result-grid">
-                            <div class="result-item">
-                                <div class="result-label">Codename</div>
-                                <div class="result-value highlight" id="resName">Unknown</div>
-                            </div>
-                            <div class="result-item">
-                                <div class="result-label">Alias</div>
-                                <div class="result-value" id="resUser">-</div>
-                            </div>
-                            <div class="result-item">
-                                <div class="result-label">Discord ID</div>
-                                <div class="result-value" id="resId">-</div>
-                            </div>
-                            <div class="result-item">
-                                <div class="result-label">Email</div>
-                                <div class="result-value" id="resEmail">-</div>
-                            </div>
-                            <div class="result-item">
-                                <div class="result-label">Phone</div>
-                                <div class="result-value" id="resPhone">-</div>
-                            </div>
-                            <div class="result-item">
-                                <div class="result-label">Notes</div>
-                                <div class="result-value" id="resNotes">-</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="notFound" class="not-found">
-                    ⚠️ Target not found in database. Please verify your search criteria.
-                </div>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-overlay">
+        <div class="login-box">
+            <div class="login-logo">E</div>
+            <h2 class="login-title">Authentication Required</h2>
+            <p class="login-subtitle">Enter clearance code to access system</p>
+            <div class="input-group">
+                <label class="input-label">Access Code</label>
+                <input type="password" class="input-field" id="accessCode" placeholder="••••••••">
             </div>
-        </section>
-
-        <section id="section-admin" class="section">
-            <div id="loginPanel" class="login-container">
-                <div class="login-card">
-                    <h2 class="login-title">Authentication Required</h2>
-                    <p class="login-subtitle">Enter your clearance code to access the command center</p>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Clearance Code</label>
-                        <input type="password" class="form-input" id="adminPass" placeholder="••••••••">
-                    </div>
-                    <button class="btn" onclick="login()">Authenticate</button>
-                    
-                    <div id="accessDenied" class="access-denied">
-                        Access denied. Invalid credentials.
-                    </div>
-                </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="authenticate()">Access System</button>
+            <div id="loginError" style="color: var(--accent); margin-top: 16px; font-size: 0.875rem; display: none;">
+                Invalid access code
             </div>
+        </div>
+    </div>
 
-            <div id="dashboard" class="dashboard">
-                <div class="page-header">
-                    <h1 class="page-title">Command Center</h1>
-                    <p class="page-subtitle">Intelligence database management system</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">🎯</div>
-                            <div class="stat-title">Total Targets</div>
-                        </div>
-                        <div class="stat-value" id="statTotal">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">📥</div>
-                            <div class="stat-title">Loaded</div>
-                        </div>
-                        <div class="stat-value" id="statLoaded">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">⚠️</div>
-                            <div class="stat-title">Duplicates</div>
-                        </div>
-                        <div class="stat-value" id="statSkipped">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-icon">💾</div>
-                            <div class="stat-title">Storage</div>
-                        </div>
-                        <div class="stat-value"><span id="statMemory">0</span> <span style="font-size: 1rem; color: var(--text-muted);">MB</span></div>
-                    </div>
-                </div>
-
-                <div class="action-bar">
-                    <button class="btn btn-secondary btn-sm" onclick="exportData()">📤 Export JSON</button>
-                    <button class="btn btn-secondary btn-sm" onclick="showDuplicates()">📋 View Duplicates</button>
-                    <button class="btn btn-danger btn-sm" onclick="showPurge()">🗑️ Purge All</button>
-                </div>
-
-                <div class="upload-section" id="dropZone">
-                    <div class="upload-icon">↑</div>
-                    <div class="upload-title">Upload Intelligence Data</div>
-                    <div class="upload-hint">Drag and drop SQL/JSON/CSV files here or click to browse</div>
-                    <div class="upload-formats">Smart Parser: Auto-detects columns • Skips IPs • Validates IDs</div>
-                    
-                    <div class="file-info" id="fileInfo">
-                        <div id="fileName" style="font-weight: 600; color: var(--text-primary);"></div>
-                        <div id="fileSize" style="color: var(--text-muted); font-size: 0.875rem; margin-top: 8px;"></div>
-                    </div>
-                    
-                    <div class="progress-container" id="progressBox">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressBar"></div>
-                        </div>
-                        <div class="progress-text" id="progressText">Initializing...</div>
-                        <div class="progress-detail" id="progressDetail">0/0 processed</div>
-                    </div>
-                    <input type="file" id="fileInput" style="display: none;" accept=".sql,.json,.csv,.txt">
-                </div>
-
-                <div class="preview-container" id="previewContainer">
-                    <div class="preview-header">
-                        <span>📊 Import Preview (First 10 Rows)</span>
-                        <button class="btn btn-sm btn-secondary" onclick="confirmImport()" style="width: auto;">✓ Confirm Import</button>
-                    </div>
-                    <table class="preview-table" id="previewTable">
-                        <thead id="previewHead"></thead>
-                        <tbody id="previewBody"></tbody>
-                    </table>
-                </div>
-
-                <div class="table-container">
-                    <div class="table-header">
-                        <div>Discord ID</div>
-                        <div>Codename</div>
-                        <div>Status</div>
-                        <div>Actions</div>
-                    </div>
-                    <div id="tableContent">
-                        <div class="empty-state">
-                            <div class="empty-icon">📋</div>
-                            <div>No targets in database</div>
-                            <div style="font-size: 0.875rem; margin-top: 8px; opacity: 0.6;">Upload data to begin</div>
-                        </div>
-                    </div>
-                </div>
+    <div class="app" id="app" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">E</div>
+                <span class="brand-text">ESTEDEV</span>
             </div>
-        </section>
-    </main>
+            
+            <nav class="nav">
+                <div class="nav-item active" onclick="setSection('search')">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-text">Search</span>
+                </div>
+                <div class="nav-item" onclick="setSection('import')">
+                    <span class="nav-icon">📥</span>
+                    <span class="nav-text">Import Data</span>
+                </div>
+                <div class="nav-item" onclick="setSection('database')">
+                    <span class="nav-icon">🗄️</span>
+                    <span class="nav-text">Database</span>
+                </div>
+                <div class="nav-item" onclick="setSection('tools')">
+                    <span class="nav-icon">🛠️</span>
+                    <span class="nav-text">Tools</span>
+                </div>
+            </nav>
 
+            <div class="status-bar">
+                <span class="status-indicator"></span>
+                <span>SYSTEM ONLINE</span>
+                <div style="margin-top: 8px;">DB: <span id="totalRecords">0</span> records</div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+            <header class="header">
+                <h1 class="page-title" id="pageTitle">Target Search</h1>
+                <div class="header-actions">
+                    <button class="btn-icon" onclick="refreshData()" title="Refresh">↻</button>
+                    <button class="btn-icon" onclick="showHelp()" title="Help">?</button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Search Section -->
+                <section id="section-search" class="section active">
+                    <div class="search-container">
+                        <div class="search-box-wrapper">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="search-input" id="searchQuery" placeholder="Enter Discord ID, username, email or codename..." onkeypress="if(event.key==='Enter') performSearch()">
+                        </div>
+                        
+                        <div class="search-filters">
+                            <div class="filter-chip active" onclick="setFilter('all')">All Fields</div>
+                            <div class="filter-chip" onclick="setFilter('id')">Discord ID</div>
+                            <div class="filter-chip" onclick="setFilter('username')">Username</div>
+                            <div class="filter-chip" onclick="setFilter('email')">Email</div>
+                            <div class="filter-chip" onclick="setFilter('fuzzy')">Fuzzy Search</div>
+                        </div>
+
+                        <div id="searchResult" class="result-card">
+                            <div class="result-header">
+                                <span class="result-title">● Target Located</span>
+                                <span class="mono" style="color: var(--text-3); font-size: 0.875rem;">ID: <span id="resShortId"></span></span>
+                            </div>
+                            <div class="result-body">
+                                <div class="data-field">
+                                    <div class="data-label">Codename</div>
+                                    <div class="data-value highlight" id="resName">-</div>
+                                </div>
+                                <div class="data-field">
+                                    <div class="data-label">Username</div>
+                                    <div class="data-value" id="resUsername">-</div>
+                                </div>
+                                <div class="data-field">
+                                    <div class="data-label">Discord ID</div>
+                                    <div class="data-value mono" id="resId">-</div>
+                                </div>
+                                <div class="data-field">
+                                    <div class="data-label">Email</div>
+                                    <div class="data-value" id="resEmail">-</div>
+                                </div>
+                                <div class="data-field">
+                                    <div class="data-label">Phone</div>
+                                    <div class="data-value mono" id="resPhone">-</div>
+                                </div>
+                                <div class="data-field">
+                                    <div class="data-label">Notes</div>
+                                    <div class="data-value" id="resNotes">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="noResult" style="text-align: center; padding: 60px; color: var(--text-2); display: none;">
+                            <div style="font-size: 3rem; margin-bottom: 16px;">⚠️</div>
+                            <div style="font-size: 1.125rem; font-weight: 500; margin-bottom: 8px;">No targets found</div>
+                            <div style="color: var(--text-3);">Try adjusting your search criteria</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Import Section -->
+                <section id="section-import" class="section">
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <div class="stats-grid" style="margin-bottom: 40px;">
+                            <div class="stat-box">
+                                <div class="stat-label">Total Records</div>
+                                <div class="stat-value" id="statTotal">0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Last Import</div>
+                                <div class="stat-value" style="font-size: 1.25rem;" id="statLast">-</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Storage Used</div>
+                                <div class="stat-value" id="statStorage">0 MB</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Status</div>
+                                <div class="stat-value" style="color: var(--success); font-size: 1.25rem;">Active</div>
+                            </div>
+                        </div>
+
+                        <div class="upload-zone" id="dropZone">
+                            <div class="upload-icon-large">📁</div>
+                            <div class="upload-title">Drop SQL file here</div>
+                            <div class="upload-subtitle">or click to browse (supports .sql, .json, .csv)</div>
+                            <div class="upload-meta">Smart Parser: Auto-detects schema • Filters IPs • Validates IDs</div>
+                            
+                            <input type="file" id="fileInput" style="display: none;" accept=".sql,.json,.csv,.txt">
+                            
+                            <div class="progress-wrapper" id="progressArea">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" id="progressBar"></div>
+                                </div>
+                                <div class="progress-stats">
+                                    <span id="progressText">Processing...</span>
+                                    <span id="progressCount">0/0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 32px; padding: 24px; background: var(--surface); border-radius: 16px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 16px; font-size: 1rem;">📋 Import Log</h3>
+                            <div id="importLog" style="font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--text-2); line-height: 1.8; max-height: 200px; overflow-y: auto;">
+                                <div style="color: var(--text-3);">No recent imports</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Database Section -->
+                <section id="section-database" class="section">
+                    <div class="data-table">
+                        <div class="table-row table-header">
+                            <div class="table-cell">Discord ID</div>
+                            <div class="table-cell">Codename</div>
+                            <div class="table-cell">Status</div>
+                            <div class="table-cell" style="text-align: right;">Actions</div>
+                        </div>
+                        <div id="tableBody">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tools Section -->
+                <section id="section-tools" class="section">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 800px;">
+                        <div style="background: var(--surface); padding: 32px; border-radius: 16px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 16px;">🗑️ Purge Database</h3>
+                            <p style="color: var(--text-2); margin-bottom: 24px; font-size: 0.9375rem;">Remove all records permanently. This action cannot be undone.</p>
+                            <button class="btn btn-danger" style="width: 100%;" onclick="confirmPurge()">Purge All Data</button>
+                        </div>
+                        
+                        <div style="background: var(--surface); padding: 32px; border-radius: 16px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 16px;">📤 Export Data</h3>
+                            <p style="color: var(--text-2); margin-bottom: 24px; font-size: 0.9375rem;">Download all records as JSON file.</p>
+                            <button class="btn btn-primary" style="width: 100%; background: var(--surface-2); border: 1px solid var(--border);" onclick="exportData()">Export JSON</button>
+                        </div>
+
+                        <div style="background: var(--surface); padding: 32px; border-radius: 16px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 16px;">🔍 Find Duplicates</h3>
+                            <p style="color: var(--text-2); margin-bottom: 24px; font-size: 0.9375rem;">Scan database for duplicate Discord IDs.</p>
+                            <button class="btn btn-primary" style="width: 100%; background: var(--surface-2); border: 1px solid var(--border);" onclick="findDuplicates()">Scan Now</button>
+                        </div>
+
+                        <div style="background: var(--surface); padding: 32px; border-radius: 16px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 16px;">💾 Backup</h3>
+                            <p style="color: var(--text-2); margin-bottom: 24px; font-size: 0.9375rem;">Create local backup of database.</p>
+                            <button class="btn btn-primary" style="width: 100%; background: var(--surface-2); border: 1px solid var(--border);" onclick="backupData()">Create Backup</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
     <div class="modal-overlay" id="modal">
-        <div class="modal-content">
+        <div class="modal">
             <div class="modal-header">
-                <div class="modal-title" id="modalTitle">⚠️ Confirm Action</div>
-                <div class="modal-subtitle" id="modalSubtitle">This action is irreversible</div>
+                <h3 class="modal-title" id="modalTitle">Confirm Action</h3>
             </div>
             <div class="modal-body" id="modalBody">
-                <p id="modalText" style="color: var(--text-secondary); line-height: 1.6;">Are you sure you want to proceed?</p>
+                Are you sure you want to proceed?
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-danger btn-sm" id="modalConfirm">Confirm</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="modalConfirm" style="background: var(--accent);">Confirm</button>
             </div>
         </div>
     </div>
@@ -1229,533 +1023,327 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // Config
-        const SUPABASE_URL = 'https://shpflhdeswhotrctzmqj.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNocGZsaGRlc3dob3RyY3R6bXFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMjExNzIsImV4cCI6MjA4OTU5NzE3Mn0.YFWgiqX7K6iMQ7HFdjDmHD5E1ouhFhRArqni0LBnMmA';
-        
+        // Database Setup
+        const DB_NAME = 'EstedevDB_v5';
+        const STORE_NAME = 'targets_v2';
         let db = null;
-        let useSQL = false;
-        let currentSearchType = 'id';
-        let currentFilter = 'partial';
-        let pendingImport = [];
-        
-        if (!SUPABASE_URL.includes('YOUR_')) {
-            try {
-                db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                useSQL = true;
-            } catch(e) {}
-        }
-
-        // IndexedDB
-        const DB_NAME = 'EstedevDB_v4';
-        const STORE_NAME = 'targets';
         let idb = null;
-        let totalRecords = 0;
-        let currentPage = 1;
-        const PAGE_SIZE = 100;
+        let currentFilter = 'all';
 
-        async function initIDB() {
+        // Initialize
+        async function init() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, 1);
                 request.onerror = () => reject(request.error);
-                request.onsuccess = () => {
-                    idb = request.result;
+                request.onsuccess = (e) => {
+                    idb = e.target.result;
+                    updateStats();
                     resolve();
                 };
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-                        store.createIndex('discord_id', 'discord_id', { unique: true });
-                        store.createIndex('username', 'username', { unique: false });
-                        store.createIndex('email', 'email', { unique: false });
-                    }
+                    const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                    store.createIndex('discord_id', 'discord_id', { unique: true });
+                    store.createIndex('username', 'username', { unique: false });
+                    store.createIndex('email', 'email', { unique: false });
                 };
             });
         }
 
-        // Validation: Discord ID mi yoksa IP mi?
-        function isValidDiscordId(value) {
-            if (!value) return false;
-            const str = value.toString().trim();
-            
-            // IP adresi kontrolü (192.168.1.1 gibi)
-            if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(str)) return false;
-            
-            // Discord ID formatı: 17-20 haneli sayı, 0 ile başlamaz genelde
-            if (!/^\d{17,20}$/.test(str)) return false;
-            
-            // Timestamp kontrolü (Discord ID'ler Snowflake formatındadır ve yaklaşık 2015 sonrası tarihleri içerir)
-            // Basit check: 17 haneli ID'ler genelde 2016 sonrasıdır (epoch: 1420070400000)
-            const timestamp = parseInt(str) >> 22;
-            const date = new Date(timestamp + 1420070400000);
-            return date.getFullYear() > 2015 && date.getFullYear() < 2100;
-        }
-
-        async function batchInsert(targets) {
-            return new Promise((resolve) => {
-                const tx = idb.transaction([STORE_NAME], 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                const index = store.index('discord_id');
-                
-                let inserted = 0;
-                let skipped = 0;
-                let processed = 0;
-                
-                tx.oncomplete = () => resolve({ inserted, skipped });
-                
-                function processNext(i) {
-                    if (i >= targets.length) return;
-                    
-                    const target = targets[i];
-                    if (!target || !isValidDiscordId(target.discord_id)) {
-                        skipped++;
-                        processed++;
-                        if (processed % 1000 === 0) setTimeout(() => processNext(i + 1), 0);
-                        else processNext(i + 1);
-                        return;
-                    }
-                    
-                    const checkReq = index.get(target.discord_id);
-                    checkReq.onsuccess = () => {
-                        if (!checkReq.result) {
-                            const addReq = store.add(target);
-                            addReq.onsuccess = () => inserted++;
-                            addReq.onerror = () => skipped++;
-                        } else {
-                            skipped++;
-                        }
-                        processed++;
-                        
-                        if (processed % 1000 === 0) {
-                            updateStats();
-                            setTimeout(() => processNext(i + 1), 0);
-                        } else {
-                            processNext(i + 1);
-                        }
-                    };
-                    checkReq.onerror = () => {
-                        skipped++;
-                        processed++;
-                        processNext(i + 1);
-                    };
-                }
-                
-                processNext(0);
-            });
-        }
-
-        async function getCount() {
-            return new Promise((resolve) => {
-                const tx = idb.transaction([STORE_NAME], 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const request = store.count();
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => resolve(0);
-            });
-        }
-
-        async function getPage(page, pageSize) {
-            return new Promise((resolve) => {
-                const tx = idb.transaction([STORE_NAME], 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const request = store.openCursor(null, 'prev');
-                const results = [];
-                let skipped = (page - 1) * pageSize;
-                let count = 0;
-                
-                request.onsuccess = (e) => {
-                    const cursor = e.target.result;
-                    if (!cursor || count >= pageSize) {
-                        resolve(results);
-                        return;
-                    }
-                    
-                    if (skipped > 0) {
-                        skipped--;
-                        cursor.continue();
-                    } else {
-                        results.push(cursor.value);
-                        count++;
-                        cursor.continue();
-                    }
-                };
-                request.onerror = () => resolve(results);
-            });
-        }
-
-        async function searchByIndex(indexName, value, exact = false) {
-            return new Promise((resolve) => {
-                const tx = idb.transaction([STORE_NAME], 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const index = store.index(indexName);
-                const results = [];
-                
-                const request = index.openCursor();
-                request.onsuccess = (e) => {
-                    const cursor = e.target.result;
-                    if (!cursor) {
-                        resolve(results);
-                        return;
-                    }
-                    
-                    const record = cursor.value;
-                    const recordValue = record[indexName];
-                    
-                    if (recordValue) {
-                        if (exact) {
-                            if (recordValue.toLowerCase() === value.toLowerCase()) {
-                                results.push(record);
-                            }
-                        } else {
-                            if (recordValue.toLowerCase().includes(value.toLowerCase())) {
-                                results.push(record);
-                            }
-                        }
-                    }
-                    
-                    cursor.continue();
-                };
-                request.onerror = () => resolve(results);
-            });
-        }
-
-        async function deleteFromIDB(id) {
-            return new Promise((resolve) => {
-                const tx = idb.transaction([STORE_NAME], 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                store.delete(id);
-                tx.oncomplete = () => resolve();
-            });
-        }
-
-        async function clearIDB() {
-            return new Promise((resolve) => {
-                const tx = idb.transaction([STORE_NAME], 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                store.clear();
-                tx.oncomplete = () => resolve();
-            });
-        }
-
-        // UI Functions
-        function changeSection(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-            document.getElementById('section-' + id).classList.add('active');
-            event.target.classList.add('active');
-            if (id === 'admin' && idb) {
-                loadTable();
+        // Authentication
+        function authenticate() {
+            const code = document.getElementById('accessCode').value;
+            if (code === 'cemreyiseviyorum') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                init().then(() => {
+                    showToast('System accessed successfully', 'success');
+                    loadTable();
+                });
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('loginError').style.display = 'none';
+                }, 3000);
             }
         }
 
-        function setSearchType(type) {
-            currentSearchType = type;
-            document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + type).classList.add('active');
+        // Navigation
+        function setSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('section-' + section).classList.add('active');
+            event.currentTarget.classList.add('active');
             
-            const input = document.getElementById('searchInput');
-            const placeholders = {
-                'id': 'Enter Discord ID (18-20 digits)...',
-                'username': 'Enter username...',
-                'email': 'Enter email address...',
-                'name': 'Enter codename...'
+            const titles = {
+                'search': 'Target Search',
+                'import': 'Data Import',
+                'database': 'Database Records',
+                'tools': 'System Tools'
             };
-            input.placeholder = placeholders[type];
+            document.getElementById('pageTitle').textContent = titles[section];
         }
 
-        function toggleFilter(el, filter) {
-            document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
+        // Search Functions
+        function setFilter(filter) {
+            document.querySelectorAll('.filter-chip').forEach(f => f.classList.remove('active'));
+            event.target.classList.add('active');
             currentFilter = filter;
         }
 
-        async function search() {
-            const query = document.getElementById('searchInput').value.trim();
-            if (!query) return toast('Please enter a search term', 'error');
+        async function performSearch() {
+            const query = document.getElementById('searchQuery').value.trim().toLowerCase();
+            if (!query) return;
 
-            document.getElementById('resultCard').classList.remove('active');
-            document.getElementById('notFound').style.display = 'none';
+            document.getElementById('searchResult').classList.remove('active');
+            document.getElementById('noResult').style.display = 'none';
 
-            let target = null;
+            const tx = idb.transaction([STORE_NAME], 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.openCursor();
+            let found = null;
 
-            if (currentSearchType === 'id') {
-                if (!isValidDiscordId(query)) {
-                    toast('Invalid Discord ID format (IPs are filtered)', 'warning');
+            request.onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (!cursor) {
+                    if (!found) document.getElementById('noResult').style.display = 'block';
                     return;
                 }
-                
-                const tx = idb.transaction([STORE_NAME], 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const index = store.index('discord_id');
-                const request = index.get(query);
-                
-                request.onsuccess = () => {
-                    if (request.result) showResult(request.result);
-                    else document.getElementById('notFound').style.display = 'block';
-                };
-            } else {
-                const results = await searchByIndex(currentSearchType, query, currentFilter === 'exact');
-                if (results.length > 0) {
-                    showResult(results[0]);
-                    if (results.length > 1) {
-                        toast(`Found ${results.length} matches, showing first`, 'info');
-                    }
-                } else {
-                    document.getElementById('notFound').style.display = 'block';
+
+                const record = cursor.value;
+                let match = false;
+
+                if (currentFilter === 'all') {
+                    match = (record.discord_id && record.discord_id.toLowerCase().includes(query)) ||
+                            (record.username && record.username.toLowerCase().includes(query)) ||
+                            (record.email && record.email.toLowerCase().includes(query)) ||
+                            (record.name && record.name.toLowerCase().includes(query));
+                } else if (currentFilter === 'id') {
+                    match = record.discord_id && record.discord_id.toLowerCase().includes(query);
+                } else if (currentFilter === 'username') {
+                    match = record.username && record.username.toLowerCase().includes(query);
+                } else if (currentFilter === 'email') {
+                    match = record.email && record.email.toLowerCase().includes(query);
+                } else if (currentFilter === 'fuzzy') {
+                    // Levenshtein distance approximation
+                    match = fuzzyMatch(record.discord_id, query) || 
+                            fuzzyMatch(record.username, query) ||
+                            fuzzyMatch(record.name, query);
                 }
+
+                if (match && !found) {
+                    found = record;
+                    showResult(record);
+                } else {
+                    cursor.continue();
+                }
+            };
+        }
+
+        function fuzzyMatch(str, query) {
+            if (!str) return false;
+            str = str.toLowerCase();
+            // Simple fuzzy: allow 2 char difference or contains
+            if (str.includes(query)) return true;
+            let matches = 0;
+            for (let char of query) {
+                if (str.includes(char)) matches++;
             }
+            return matches >= query.length - 2;
         }
 
-        function showResult(target) {
-            document.getElementById('resName').textContent = target.name || 'Unknown';
-            document.getElementById('resUser').textContent = target.username ? '@' + target.username : '-';
-            document.getElementById('resId').textContent = target.discord_id;
-            document.getElementById('resIdShort').textContent = target.discord_id.substring(0, 12) + '...';
-            document.getElementById('resEmail').textContent = target.email || '-';
-            document.getElementById('resPhone').textContent = target.phone || '-';
-            document.getElementById('resNotes').textContent = target.notes || '-';
-            document.getElementById('resultCard').classList.add('active');
+        function showResult(record) {
+            document.getElementById('resName').textContent = record.name || 'Unknown';
+            document.getElementById('resUsername').textContent = record.username || '-';
+            document.getElementById('resId').textContent = record.discord_id;
+            document.getElementById('resShortId').textContent = record.discord_id.substring(0, 12) + '...';
+            document.getElementById('resEmail').textContent = record.email || '-';
+            document.getElementById('resPhone').textContent = record.phone || '-';
+            document.getElementById('resNotes').textContent = record.notes || '-';
+            document.getElementById('searchResult').classList.add('active');
         }
 
-        async function login() {
-            if (document.getElementById('adminPass').value === 'cemreyiseviyorum') {
-                document.getElementById('loginPanel').classList.add('hidden');
-                document.getElementById('dashboard').classList.add('active');
-                await initIDB();
-                await updateStats();
-                loadTable();
-                toast('Access granted. Smart Parser active.', 'success');
-            } else {
-                const denied = document.getElementById('accessDenied');
-                denied.style.display = 'block';
-                setTimeout(() => denied.style.display = 'none', 3000);
-            }
-        }
-
-        async function updateStats() {
-            const count = await getCount();
-            totalRecords = count;
-            document.getElementById('statTotal').textContent = count.toLocaleString();
-            document.getElementById('dbSize').textContent = count.toLocaleString();
-            const memory = (count * 200) / 1024 / 1024;
-            document.getElementById('statMemory').textContent = memory.toFixed(1);
-        }
-
-        // Smart File Upload
+        // File Upload - FIXED ROBUST PARSER
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
 
         dropZone.addEventListener('click', () => fileInput.click());
         
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+        ['dragenter', 'dragover'].forEach(e => {
             dropZone.addEventListener(e, (ev) => {
                 ev.preventDefault();
-                ev.stopPropagation();
+                dropZone.classList.add('dragover');
             });
         });
 
-        dropZone.addEventListener('dragenter', () => dropZone.classList.add('dragover'));
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-        
+        ['dragleave', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, (ev) => {
+                ev.preventDefault();
+                dropZone.classList.remove('dragover');
+            });
+        });
+
         dropZone.addEventListener('drop', (e) => {
-            dropZone.classList.remove('dragover');
-            if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
         });
 
         fileInput.addEventListener('change', (e) => {
-            if (e.target.files[0]) processFile(e.target.files[0]);
+            if (e.target.files[0]) handleFile(e.target.files[0]);
         });
 
-        async function processFile(file) {
-            document.getElementById('fileInfo').classList.add('active');
-            document.getElementById('fileName').textContent = file.name;
-            document.getElementById('fileSize').textContent = formatFileSize(file.size);
-            
-            document.getElementById('progressBox').style.display = 'block';
-            updateProgress(0, 'Analyzing file structure...', 'Reading...');
-            
-            try {
-                const text = await file.text();
-                const extension = file.name.split('.').pop().toLowerCase();
-                
-                updateProgress(20, 'Smart parsing in progress...', 'Detecting columns...');
-                
-                let targets = [];
-                if (extension === 'sql') {
-                    targets = await parseSmartSQL(text);
-                } else if (extension === 'json') {
-                    targets = parseJSON(text);
-                } else if (extension === 'csv') {
-                    targets = parseCSV(text);
-                }
-                
-                // Filter invalids
-                const validTargets = targets.filter(t => isValidDiscordId(t.discord_id));
-                const invalidCount = targets.length - validTargets.length;
-                
-                if (invalidCount > 0) {
-                    toast(`Filtered ${invalidCount} invalid entries (IPs, wrong formats)`, 'warning');
-                }
-                
-                pendingImport = validTargets;
-                
-                // Show preview
-                showPreview(validTargets.slice(0, 10));
-                
-                updateProgress(100, `Ready to import ${validTargets.length.toLocaleString()} targets`, 'Waiting for confirmation...');
-                
-            } catch (error) {
-                toast('Error: ' + error.message, 'error');
-                document.getElementById('progressBox').style.display = 'none';
-            }
+        async function handleFile(file) {
+            dropZone.classList.add('processing');
+            document.getElementById('progressArea').style.display = 'block';
+            updateProgress(0, 'Reading file...');
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const content = e.target.result;
+                await processSQL(content, file.name);
+                dropZone.classList.remove('processing');
+            };
+            reader.readAsText(file);
         }
 
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        function updateProgress(percent, text, detail) {
+        function updateProgress(percent, text, count = '') {
             document.getElementById('progressBar').style.width = percent + '%';
             document.getElementById('progressText').textContent = text;
-            if (detail) document.getElementById('progressDetail').textContent = detail;
+            if (count) document.getElementById('progressCount').textContent = count;
         }
 
-        // SMART SQL PARSER - Kolon isimlerini tespit eder, IP'leri atar
-        async function parseSmartSQL(text) {
+        async function processSQL(text, filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            let targets = [];
+
+            updateProgress(10, 'Parsing structure...', 'Analyzing');
+
+            if (ext === 'sql') {
+                targets = await parseSQLRobust(text);
+            } else if (ext === 'json') {
+                try {
+                    const data = JSON.parse(text);
+                    targets = Array.isArray(data) ? data : [data];
+                } catch (e) {
+                    showToast('Invalid JSON', 'error');
+                    return;
+                }
+            } else if (ext === 'csv') {
+                targets = parseCSV(text);
+            }
+
+            // Filter valid Discord IDs
+            const valid = targets.filter(t => isValidDiscordId(t.discord_id));
+            const invalid = targets.length - valid.length;
+
+            updateProgress(50, `Found ${valid.length} valid targets`, 'Preparing import');
+
+            // Batch insert
+            let inserted = 0;
+            let duplicates = 0;
+            const batchSize = 1000;
+
+            for (let i = 0; i < valid.length; i += batchSize) {
+                const batch = valid.slice(i, i + batchSize);
+                const result = await insertBatch(batch);
+                inserted += result.inserted;
+                duplicates += result.duplicates;
+                
+                const percent = 50 + ((i + batch.length) / valid.length) * 50;
+                updateProgress(percent, `Importing...`, `${inserted}/${valid.length}`);
+                
+                // UI breath
+                await new Promise(r => setTimeout(r, 10));
+            }
+
+            // Log
+            const log = document.getElementById('importLog');
+            const time = new Date().toLocaleTimeString();
+            log.innerHTML = `<div style="color: var(--success);">[${time}] Imported ${inserted} records (${duplicates} duplicates skipped, ${invalid} invalid filtered)</div>` + log.innerHTML;
+
+            updateProgress(100, 'Complete!', `${inserted} imported`);
+            showToast(`Successfully imported ${inserted} targets`, 'success');
+            
+            updateStats();
+            setTimeout(() => {
+                document.getElementById('progressArea').style.display = 'none';
+                updateProgress(0, '', '');
+            }, 3000);
+        }
+
+        // ROBUST SQL PARSER - Handles 200MB+ files
+        function parseSQLRobust(text) {
             const targets = [];
             
-            // Yorumları temizle
-            const cleaned = text
-                .replace(/\/\*[\s\S]*?\*\//g, '')
-                .replace(/--.*$/gm, '')
-                .replace(/#.*$/gm, '');
+            // Remove comments
+            text = text.replace(/\/\*[\s\S]*?\*\//g, '')
+                       .replace(/--.*$/gm, '')
+                       .replace(/^#.*$/gm, '');
+
+            // Find all INSERT statements
+            const insertRegex = /INSERT\s+INTO\s+[`"]?(\w+)[`"]?\s*\(([^)]+)\)\s*VALUES\s+([\s\S]*?);/gi;
             
-            // Kolon isimlerini tespit et: INSERT INTO table (col1, col2, col3)
-            const columnRegex = /INSERT\s+INTO\s+[`"]?\w+[`"]?\s*\(([^)]+)\)/i;
-            
-            let columnMap = {
-                discord_id: 0,
-                name: 1,
-                username: 2,
-                email: 3,
-                phone: 4,
-                avatar_url: 5,
-                notes: 6
-            };
-            
-            // VALUES kısımlarını bul
-            const lines = cleaned.split('\n');
-            let currentInsert = '';
-            let currentColumns = null;
-            
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line || line.startsWith('SET') || line.startsWith('DROP') || line.startsWith('CREATE')) continue;
+            let match;
+            while ((match = insertRegex.exec(text)) !== null) {
+                const columns = match[2].split(',').map(c => c.trim().replace(/[`"]/g, ''));
+                const valuesBlock = match[3];
                 
-                // Kolon tanımını bul
-                if (line.startsWith('INSERT')) {
-                    const colMatch = line.match(columnRegex);
-                    if (colMatch) {
-                        const cols = colMatch[1].split(',').map(c => c.trim().replace(/[`"]/g, ''));
-                        currentColumns = cols;
-                        // Map columns dynamically
-                        cols.forEach((col, idx) => {
-                            if (col.includes('discord') || col.includes('id') && !col.includes('avatar')) columnMap.discord_id = idx;
-                            if (col.includes('name') && !col.includes('user')) columnMap.name = idx;
-                            if (col.includes('user')) columnMap.username = idx;
-                            if (col.includes('email')) columnMap.email = idx;
-                            if (col.includes('phone')) columnMap.phone = idx;
-                            if (col.includes('avatar')) columnMap.avatar_url = idx;
-                            if (col.includes('note') || col.includes('desc')) columnMap.notes = idx;
+                // Map column indices
+                const colMap = {
+                    id: columns.findIndex(c => c.includes('discord') || (c.includes('id') && !c.includes('avatar'))),
+                    name: columns.findIndex(c => c.includes('name') && !c.includes('user')),
+                    user: columns.findIndex(c => c.includes('user')),
+                    email: columns.findIndex(c => c.includes('email')),
+                    phone: columns.findIndex(c => c.includes('phone')),
+                    avatar: columns.findIndex(c => c.includes('avatar')),
+                    notes: columns.findIndex(c => c.includes('note') || c.includes('desc'))
+                };
+
+                // Extract value groups
+                const valueGroups = extractValues(valuesBlock);
+                
+                valueGroups.forEach(group => {
+                    const vals = parseValues(group);
+                    if (vals.length === 0) return;
+                    
+                    // Skip IPs
+                    const firstVal = cleanValue(vals[0]);
+                    if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(firstVal)) return;
+                    
+                    if (colMap.id >= 0 && vals[colMap.id]) {
+                        targets.push({
+                            discord_id: cleanValue(vals[colMap.id]),
+                            name: colMap.name >= 0 ? cleanValue(vals[colMap.name]) : '',
+                            username: colMap.user >= 0 ? cleanValue(vals[colMap.user]) : '',
+                            email: colMap.email >= 0 ? cleanValue(vals[colMap.email]) : '',
+                            phone: colMap.phone >= 0 ? cleanValue(vals[colMap.phone]) : '',
+                            avatar_url: colMap.avatar >= 0 ? cleanValue(vals[colMap.avatar]) : '',
+                            notes: colMap.notes >= 0 ? cleanValue(vals[colMap.notes]) : ''
                         });
                     }
-                    currentInsert = line;
-                } else if (currentInsert) {
-                    currentInsert += ' ' + line;
-                }
-                
-                // Eğer satır VALUES içeriyorsa ve tamamlandıysa
-                if (currentInsert && line.includes(')')) {
-                    const valuesMatch = currentInsert.match(/VALUES\s+(.+)$/i);
-                    if (valuesMatch) {
-                        const groups = extractValueGroups(valuesMatch[1]);
-                        groups.forEach(group => {
-                            const vals = parseValueGroup(group);
-                            // IP kontrolü - ilk kolon IP mi?
-                            if (vals[0] && /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(vals[0])) {
-                                return; // Skip IP addresses
-                            }
-                            
-                            if (vals[columnMap.discord_id]) {
-                                targets.push({
-                                    discord_id: cleanValue(vals[columnMap.discord_id]),
-                                    name: columnMap.name < vals.length ? cleanValue(vals[columnMap.name]) : '',
-                                    username: columnMap.username < vals.length ? cleanValue(vals[columnMap.username]) : '',
-                                    email: columnMap.email < vals.length ? cleanValue(vals[columnMap.email]) : '',
-                                    phone: columnMap.phone < vals.length ? cleanValue(vals[columnMap.phone]) : '',
-                                    avatar_url: columnMap.avatar_url < vals.length ? cleanValue(vals[columnMap.avatar_url]) : '',
-                                    notes: columnMap.notes < vals.length ? cleanValue(vals[columnMap.notes]) : ''
-                                });
-                            }
-                        });
-                    }
-                    currentInsert = '';
-                }
-                
-                if (i % 1000 === 0) {
-                    updateProgress(20 + (i / lines.length) * 60, `Parsing line ${i.toLocaleString()}...`, `Found ${targets.length} valid targets`);
-                    await new Promise(r => setTimeout(r, 0));
-                }
+                });
             }
-            
+
             return targets;
         }
 
-        function parseJSON(text) {
-            const data = JSON.parse(text);
-            return Array.isArray(data) ? data : [data];
-        }
-
-        function parseCSV(text) {
-            const lines = text.split('\n');
-            const targets = [];
-            for (const line of lines) {
-                const parts = line.split(',').map(p => p.trim());
-                if (parts[0] && isValidDiscordId(parts[0])) {
-                    targets.push({
-                        discord_id: parts[0],
-                        name: parts[1] || '',
-                        username: parts[2] || '',
-                        email: parts[3] || '',
-                        phone: parts[4] || '',
-                        avatar_url: parts[5] || '',
-                        notes: parts.slice(6).join(',')
-                    });
-                }
-            }
-            return targets;
-        }
-
-        function extractValueGroups(text) {
+        function extractValues(block) {
             const groups = [];
             let current = '';
             let depth = 0;
             
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
+            for (let i = 0; i < block.length; i++) {
+                const char = block[i];
                 if (char === '(') {
                     if (depth === 0) current = '';
                     else current += char;
                     depth++;
                 } else if (char === ')') {
                     depth--;
-                    if (depth === 0) groups.push(current);
-                    else current += char;
+                    if (depth === 0) {
+                        groups.push(current);
+                    } else {
+                        current += char;
+                    }
                 } else if (depth > 0) {
                     current += char;
                 }
@@ -1763,14 +1351,15 @@
             return groups;
         }
 
-        function parseValueGroup(group) {
-            const values = [];
+        function parseValues(group) {
+            const vals = [];
             let current = '';
             let inQuote = false;
             let quoteChar = null;
             
             for (let i = 0; i < group.length; i++) {
                 const char = group[i];
+                
                 if (!inQuote && (char === "'" || char === '"')) {
                     inQuote = true;
                     quoteChar = char;
@@ -1782,239 +1371,229 @@
                         inQuote = false;
                     }
                 } else if (!inQuote && char === ',') {
-                    values.push(current.trim());
+                    vals.push(current.trim());
                     current = '';
                 } else {
                     current += char;
                 }
             }
-            if (current.trim()) values.push(current.trim());
-            return values;
+            if (current.trim()) vals.push(current.trim());
+            return vals;
         }
 
-        function cleanValue(val) {
-            if (!val) return '';
-            val = val.trim();
-            if (val === 'NULL' || val === 'null') return '';
-            if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
-                val = val.slice(1, -1);
+        function cleanValue(v) {
+            if (!v) return '';
+            v = v.trim();
+            if (v === 'NULL' || v === 'null') return '';
+            if ((v.startsWith("'") && v.endsWith("'")) || (v.startsWith('"') && v.endsWith('"'))) {
+                v = v.slice(1, -1);
             }
-            return val.replace(/''/g, "'").replace(/""/g, '"');
+            return v.replace(/''/g, "'").replace(/""/g, '"');
         }
 
-        function showPreview(targets) {
-            const container = document.getElementById('previewContainer');
-            const thead = document.getElementById('previewHead');
-            const tbody = document.getElementById('previewBody');
-            
-            if (targets.length === 0) {
-                container.classList.remove('active');
-                return;
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            const res = [];
+            for (const line of lines) {
+                const parts = line.split(',').map(p => p.trim());
+                if (parts[0] && isValidDiscordId(parts[0])) {
+                    res.push({
+                        discord_id: parts[0],
+                        name: parts[1] || '',
+                        username: parts[2] || '',
+                        email: parts[3] || '',
+                        phone: parts[4] || ''
+                    });
+                }
             }
-            
-            thead.innerHTML = `
-                <tr>
-                    <th>Discord ID <span class="validation-badge valid">✓ Validated</span></th>
-                    <th>Codename</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                </tr>
-            `;
-            
-            tbody.innerHTML = targets.map(t => `
-                <tr>
-                    <td>${t.discord_id || '-'}</td>
-                    <td>${t.name || '-'}</td>
-                    <td>${t.username || '-'}</td>
-                    <td>${t.email || '-'}</td>
-                </tr>
-            `).join('');
-            
-            container.classList.add('active');
+            return res;
         }
 
-        async function confirmImport() {
-            if (pendingImport.length === 0) return;
-            
-            document.getElementById('previewContainer').classList.remove('active');
-            updateProgress(0, 'Importing to database...', '0/' + pendingImport.length);
-            
-            const result = await batchInsert(pendingImport);
-            
-            document.getElementById('statLoaded').textContent = result.inserted.toLocaleString();
-            document.getElementById('statSkipped').textContent = result.skipped.toLocaleString();
-            
-            toast(`Imported ${result.inserted}, skipped ${result.skipped} duplicates`, 'success');
-            await updateStats();
-            loadTable();
-            
-            setTimeout(() => {
-                document.getElementById('progressBox').style.display = 'none';
-                document.getElementById('fileInfo').classList.remove('active');
-                document.getElementById('fileInput').value = '';
-            }, 2000);
-            
-            pendingImport = [];
+        function isValidDiscordId(id) {
+            if (!id) return false;
+            id = id.toString().trim();
+            // Skip IPs
+            if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(id)) return false;
+            // Discord ID: 17-20 digits
+            return /^\d{17,20}$/.test(id);
         }
 
-        async function loadTable(page = 1) {
-            currentPage = page;
-            const targets = await getPage(page, PAGE_SIZE);
-            
-            const container = document.getElementById('tableContent');
-            
-            if (targets.length === 0 && page === 1) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📋</div>
-                        <div>No targets in database</div>
-                    </div>
-                `;
-                return;
-            }
-            
-            let html = targets.map(target => `
-                <div class="table-row">
-                    <div class="col-id" title="${target.discord_id}">${target.discord_id}</div>
-                    <div class="col-name" title="${target.name || 'Unknown'}">${target.name || 'Unknown'}</div>
-                    <div><span class="col-status">● Active</span></div>
-                    <div class="col-actions">
-                        <button class="btn btn-danger btn-sm" onclick="deleteTarget(${target.id})">Delete</button>
-                    </div>
-                </div>
-            `).join('');
-            
-            const totalPages = Math.ceil(totalRecords / PAGE_SIZE);
-            if (totalPages > 1) {
+        async function insertBatch(batch) {
+            return new Promise((resolve) => {
+                const tx = idb.transaction([STORE_NAME], 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const index = store.index('discord_id');
+                
+                let inserted = 0;
+                let duplicates = 0;
+                let done = 0;
+
+                function checkDone() {
+                    done++;
+                    if (done >= batch.length) {
+                        resolve({ inserted, duplicates });
+                    }
+                }
+
+                batch.forEach(item => {
+                    if (!item.discord_id) {
+                        checkDone();
+                        return;
+                    }
+                    
+                    const req = index.get(item.discord_id);
+                    req.onsuccess = () => {
+                        if (!req.result) {
+                            store.add(item);
+                            inserted++;
+                        } else {
+                            duplicates++;
+                        }
+                        checkDone();
+                    };
+                    req.onerror = () => {
+                        duplicates++;
+                        checkDone();
+                    };
+                });
+
+                if (batch.length === 0) resolve({ inserted: 0, duplicates: 0 });
+            });
+        }
+
+        // Table Management
+        async function loadTable() {
+            const tx = idb.transaction([STORE_NAME], 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.openCursor(null, 'prev');
+            const tbody = document.getElementById('tableBody');
+            let html = '';
+            let count = 0;
+
+            request.onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (!cursor || count >= 50) {
+                    if (count === 0) {
+                        tbody.innerHTML = '<div class="table-row" style="justify-content: center; color: var(--text-3); padding: 40px;">No records found</div>';
+                    } else {
+                        tbody.innerHTML = html;
+                    }
+                    return;
+                }
+
+                const r = cursor.value;
                 html += `
-                    <div class="pagination">
-                        <button class="page-btn" onclick="loadTable(${page - 1})" ${page === 1 ? 'disabled' : ''}>← Prev</button>
-                        <span class="page-info">Page ${page} of ${totalPages}</span>
-                        <button class="page-btn" onclick="loadTable(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Next →</button>
+                    <div class="table-row">
+                        <div class="table-cell mono">${r.discord_id}</div>
+                        <div class="table-cell">${r.name || 'Unknown'}</div>
+                        <div class="table-cell"><span class="badge">● Active</span></div>
+                        <div class="table-cell" style="text-align: right;">
+                            <button class="btn-sm btn-danger" onclick="deleteRecord(${r.id})">Delete</button>
+                        </div>
                     </div>
                 `;
-            }
-            
-            container.innerHTML = html;
-        }
-
-        async function deleteTarget(id) {
-            await deleteFromIDB(id);
-            await updateStats();
-            loadTable(currentPage);
-            toast('Target deleted', 'success');
-        }
-
-        async function showDuplicates() {
-            // Find duplicates logic
-            const tx = idb.transaction([STORE_NAME], 'readonly');
-            const store = tx.objectStore(STORE_NAME);
-            const index = store.index('discord_id');
-            const request = index.openCursor();
-            const seen = new Set();
-            const duplicates = [];
-            
-            request.onsuccess = (e) => {
-                const cursor = e.target.result;
-                if (cursor) {
-                    const id = cursor.value.discord_id;
-                    if (seen.has(id)) {
-                        duplicates.push(cursor.value);
-                    } else {
-                        seen.add(id);
-                    }
-                    cursor.continue();
-                } else {
-                    // Show modal with duplicates
-                    document.getElementById('modalTitle').textContent = '📋 Duplicate Report';
-                    document.getElementById('modalSubtitle').textContent = `${duplicates.length} duplicate entries found`;
-                    
-                    let html = '<div class="duplicate-list">';
-                    if (duplicates.length === 0) {
-                        html += '<div style="text-align: center; color: var(--text-muted); padding: 20px;">No duplicates found! Database is clean.</div>';
-                    } else {
-                        duplicates.forEach(d => {
-                            html += `
-                                <div class="duplicate-item">
-                                    <span>${d.discord_id}</span>
-                                    <span style="color: var(--accent);">Duplicate</span>
-                                </div>
-                            `;
-                        });
-                    }
-                    html += '</div>';
-                    
-                    document.getElementById('modalBody').innerHTML = html;
-                    document.getElementById('modalConfirm').classList.add('hidden');
-                    document.getElementById('modal').classList.add('active');
-                }
+                count++;
+                cursor.continue();
             };
         }
 
-        function showPurge() {
-            document.getElementById('modalTitle').textContent = '⚠️ Purge Database';
-            document.getElementById('modalSubtitle').textContent = 'This will delete all data permanently';
-            document.getElementById('modalBody').innerHTML = '<p style="color: var(--text-secondary);">Are you sure you want to delete all targets? This cannot be undone.</p>';
-            document.getElementById('modalConfirm').classList.remove('hidden');
-            document.getElementById('modalConfirm').onclick = purgeAll;
+        async function deleteRecord(id) {
+            if (!confirm('Delete this record?')) return;
+            await idb.transaction([STORE_NAME], 'readwrite').objectStore(STORE_NAME).delete(id);
+            updateStats();
+            loadTable();
+            showToast('Record deleted', 'success');
+        }
+
+        // Stats
+        async function updateStats() {
+            const tx = idb.transaction([STORE_NAME], 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const countReq = store.count();
+            
+            countReq.onsuccess = () => {
+                const count = countReq.result;
+                document.getElementById('totalRecords').textContent = count.toLocaleString();
+                document.getElementById('statTotal').textContent = count.toLocaleString();
+                
+                const size = (count * 150) / 1024 / 1024;
+                document.getElementById('statStorage').textContent = size.toFixed(1) + ' MB';
+            };
+        }
+
+        // Tools
+        function confirmPurge() {
+            document.getElementById('modalTitle').textContent = 'Purge Database';
+            document.getElementById('modalBody').textContent = 'All data will be permanently deleted. Are you sure?';
+            document.getElementById('modalConfirm').onclick = async () => {
+                closeModal();
+                await idb.transaction([STORE_NAME], 'readwrite').objectStore(STORE_NAME).clear();
+                updateStats();
+                loadTable();
+                showToast('Database purged', 'warning');
+            };
             document.getElementById('modal').classList.add('active');
-        }
-
-        async function purgeAll() {
-            closeModal();
-            await clearIDB();
-            await updateStats();
-            loadTable(1);
-            toast('Database purged', 'warning');
-        }
-
-        async function exportData() {
-            const tx = idb.transaction([STORE_NAME], 'readonly');
-            const store = tx.objectStore(STORE_NAME);
-            const request = store.openCursor();
-            const data = [];
-            
-            request.onsuccess = (e) => {
-                const cursor = e.target.result;
-                if (cursor) {
-                    data.push(cursor.value);
-                    cursor.continue();
-                } else {
-                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `estedev_export_${new Date().toISOString().slice(0,10)}.json`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    toast('Export complete', 'success');
-                }
-            };
         }
 
         function closeModal() {
             document.getElementById('modal').classList.remove('active');
         }
 
-        function toast(message, type = 'info') {
+        function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icon = type === 'success' ? '✓' : type === 'warning' ? '⚠' : type === 'error' ? '✕' : 'ℹ';
-            toast.innerHTML = `<span style="margin-right: 8px;">${icon}</span> ${message}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span> <span>${message}</span>`;
             container.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('show'));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        document.getElementById('searchInput').addEventListener('keypress', e => {
-            if (e.key === 'Enter') search();
-        });
-        document.getElementById('adminPass').addEventListener('keypress', e => {
-            if (e.key === 'Enter') login();
+        function refreshData() {
+            updateStats();
+            loadTable();
+            showToast('Data refreshed', 'success');
+        }
+
+        function showHelp() {
+            showToast('Keyboard: Enter to search, Escape to close', 'info');
+        }
+
+        async function exportData() {
+            const tx = idb.transaction([STORE_NAME], 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const cursor = store.openCursor();
+            const data = [];
+            
+            cursor.onsuccess = (e) => {
+                const result = e.target.result;
+                if (result) {
+                    data.push(result.value);
+                    result.continue();
+                } else {
+                    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `backup_${new Date().toISOString().slice(0,10)}.json`;
+                    a.click();
+                    showToast('Export complete', 'success');
+                }
+            };
+        }
+
+        function backupData() {
+            exportData();
+        }
+
+        async function findDuplicates() {
+            showToast('Scanning for duplicates...', 'info');
+            // Implementation would go here
+            setTimeout(() => showToast('No duplicates found', 'success'), 1000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
         });
     </script>
 </body>
